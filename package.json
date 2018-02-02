@@ -5,7 +5,8 @@
   "license": "GPL-3.0",
   "scripts": {
     "build": "node_modules/.bin/webpack --config webpack.prod.js",
-    "watch": "node_modules/.bin/webpack --watch --config webpack.dev.js"
+    "watch": "node_modules/.bin/webpack --watch --config webpack.dev.js",
+    "test": "node_modules/.bin/mocha --require babel-core/register --recursive"
   },
   "dependencies": {
     "express": "4.16.2",
