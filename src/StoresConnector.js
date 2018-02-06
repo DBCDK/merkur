@@ -16,6 +16,12 @@ class StoresConnector {
             .post(`${FILESTORE_URL}/${FILES_COLLECTION}`,
                 null, null, data);
     }
+    static searchFiles(data) {
+        return new HttpClient()
+            .addHeaders({"Content-type": "application/json"})
+            .post(`${FILESTORE_URL}/${FILES_COLLECTION}`,
+                null, null, data);
+    }
 }
 
 export default StoresConnector;

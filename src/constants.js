@@ -4,7 +4,8 @@
  */
 
 const constants = {
-    filesAddEndpoint: "/files/add"
+    filesAddEndpoint: "/files/add",
+    filesSearchEndpoint: "/files/search"
 };
 Object.freeze(constants);
 

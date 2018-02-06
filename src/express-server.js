@@ -3,6 +3,7 @@
  * See license text in LICENSE.txt or at https://opensource.dbc.dk/licenses/gpl-3.0/
  */
 
+import BodyParser from "body-parser";
 import Express from "express";
 import {Server} from "http";
 import path from "path";
@@ -13,6 +14,8 @@ import StoresConnector from "./StoresConnector";
 const app = new Express();
 const server = new Server(app);
 app.use(Express.static(path.join(__dirname, "static")));
+// necessary for parsing POST request bodies
+app.use(BodyParser.json());
 
 app.post(constants.filesAddEndpoint, (req, res) => {
     let buffers = [];
@@ -34,6 +37,12 @@ app.post(constants.filesAddEndpoint, (req, res) => {
             res.status(200).send(json);
         }).catch(err => res.status(500).send(err));
     });
+});
+
+app.post(constants.filesSearchEndpoint, (req, res) => {
+    StoresConnector.searchFiles(req.body).promise.then(json =>
+        res.status(200).send(json.text)
+    ).catch(err => res.status(500).send(err));
 });
 
 // handle the rest of the routing in the client
