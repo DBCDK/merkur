@@ -6,11 +6,13 @@
 import React from "react";
 import {Route, Switch} from "react-router-dom";
 
+import AdminMode from "./AdminMode";
 import NotFound from "./NotFound";
 
 const Main = () => (
     <div id="main">
         <Switch>
+            <Route path="/" component={AdminMode}/>
             <Route path="*" component={NotFound}/>
         </Switch>
     </div>
