@@ -5,6 +5,7 @@
 
 const constants = {
     filesAddEndpoint: "/files/add",
+    filesAddMetadataEndpoint: "/files/metadata",
     filesSearchEndpoint: "/files/search"
 };
 Object.freeze(constants);

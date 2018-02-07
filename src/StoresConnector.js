@@ -16,6 +16,11 @@ class StoresConnector {
             .post(`${FILESTORE_URL}/${FILES_COLLECTION}`,
                 null, null, data);
     }
+    static addMetadata(url, data) {
+        return new HttpClient()
+            .addHeaders({"Content-type": "application/json"})
+            .post(url, null, null, data);
+    }
     static searchFiles(data) {
         return new HttpClient()
             .addHeaders({"Content-type": "application/json"})
