@@ -20,6 +20,7 @@ class FilesList extends React.Component {
     render() {
         return (
             <div>
+                <h2>files:</h2>
                 <table className="table">
                     <thead>
                         <tr>
