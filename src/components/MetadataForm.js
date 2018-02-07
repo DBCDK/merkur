@@ -12,14 +12,23 @@ import UploadForm from "./UploadForm";
 class MetadataForm extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {file: null};
         this.onClick = this.onClick.bind(this);
+        this.onFilesChosen = this.onFilesChosen.bind(this);
     }
     onClick(event) {
         event.preventDefault();
+        if(this.state.file === null) {
+            alert("no file selected");
+            return 1;
+        }
         const form = event.target.form;
         const metadata = new FileMetadata(form.name.value,
             Number.parseInt(form.agency.value), "posthus");
-        this.props.onClick(metadata);
+        this.props.onClick(this.state.file, metadata);
+    }
+    onFilesChosen({target}) {
+        this.setState({file: target.files[0]});
     }
     render() {
         return (
@@ -32,7 +41,7 @@ class MetadataForm extends React.Component {
                     <label htmlFor="agency">agency:</label>
                     <input type="text" inputMode="numeric" pattern="\d+" name="agency"/>
                 </div>
-                <UploadForm/>
+                <UploadForm onFilesChosen={this.onFilesChosen}/>
                 <button type="submit" onClick={this.onClick}>upload</button>
             </form>
         );

@@ -6,6 +6,7 @@
 import React from "react";
 
 import MetadataForm from "./MetadataForm";
+import Uploader from "../model/Uploader";
 import UploadForm from "./UploadForm";
 
 class AdminUpload extends React.Component {
@@ -13,8 +14,15 @@ class AdminUpload extends React.Component {
         super(props);
         this.onClick = this.onClick.bind(this);
     }
-    onClick(data) {
-        console.log(data);
+    onClick(file, data) {
+        const reader = new FileReader();
+        reader.readAsBinaryString(file);
+        reader.onerror = err => {
+            alert("error while uploading file: " + err);
+        };
+        reader.onload = ({target}) => {
+            Uploader.uploadFileWithMetadata(target.result, data);
+        };
     }
     render() {
         return (
