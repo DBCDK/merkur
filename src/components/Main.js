@@ -12,7 +12,7 @@ import NotFound from "./NotFound";
 const Main = () => (
     <div id="main">
         <Switch>
-            <Route path="/" component={AdminMode}/>
+            <Route exact path="/" component={AdminMode}/>
             <Route path="*" component={NotFound}/>
         </Switch>
     </div>
