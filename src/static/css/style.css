@@ -1,0 +1,18 @@
+* {
+	font-family: monospace;
+}
+
+.wrapper {
+	display: flex;
+}
+
+#sidebar {
+	position: fixed;
+	width: 0;
+	height: 100vh;
+}
+
+#main {
+	width: 80%;
+	float: right;
+}
