@@ -6,7 +6,6 @@
 import React from "react";
 
 import FilesList from "./FilesList";
-import Sidebar from "./Sidebar";
 import {
     getFileMetadata, mapResponseToMetadataList
 } from "../model/FileAttributes";
@@ -24,10 +23,7 @@ class AdminMode extends React.Component {
     }
     render() {
         return (
-            <div>
-                <Sidebar/>
-                <FilesList metadataList={this.state.files}/>
-            </div>
+            <FilesList metadataList={this.state.files}/>
         );
     }
 }

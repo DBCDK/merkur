@@ -6,7 +6,6 @@
 import React from "react";
 
 import MetadataForm from "./MetadataForm";
-import Sidebar from "./Sidebar";
 import Uploader from "../model/Uploader";
 import UploadForm from "./UploadForm";
 
@@ -27,10 +26,7 @@ class AdminUpload extends React.Component {
     }
     render() {
         return (
-            <div>
-                <Sidebar/>
-                <MetadataForm onClick={this.onClick}/>
-            </div>
+            <MetadataForm onClick={this.onClick}/>
         );
     }
 }
