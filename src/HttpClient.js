@@ -37,6 +37,9 @@ class HttpClient {
     constructor() {
         this.headers = {};
     }
+    setHeader(header, value) {
+        this.headers[header] = value;
+    }
     addHeaders(headers) {
         this.headers = this._addHeaders(headers, this.headers);
         return this;

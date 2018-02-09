@@ -87,4 +87,18 @@ describe("HttpClient requests", () => {
             expect(res.text).to.equal("success");
         });
     });
+
+    it("headers", () => {
+        const httpClient = new HttpClient();
+        expect(httpClient.headers).to.deep.equal({});
+        httpClient.addHeaders({"Content-type": "application/krabby+paddy",
+            "User-agent": "spongebrowser"});
+        expect(httpClient.headers).to.deep.equal(
+            {"Content-type": "application/krabby+paddy",
+            "User-agent": "spongebrowser"});
+        httpClient.setHeader("Content-type", "application/golden+spatula");
+        expect(httpClient.headers).to.deep.equal(
+            {"Content-type": "application/golden+spatula",
+            "User-agent": "spongebrowser"})
+    });
 });
