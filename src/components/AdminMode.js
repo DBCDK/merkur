@@ -19,7 +19,7 @@ class AdminMode extends React.Component {
         getFileMetadata({"origin": "posthus"}).then(response => {
             const metadataList = mapResponseToMetadataList(response.text);
             this.setState({files: metadataList});
-        });
+        }).catch(err => alert("error getting file metadata: " + err));
     }
     render() {
         return (
