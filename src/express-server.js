@@ -31,6 +31,13 @@ app.post(constants.filesAddMetadataEndpoint, (req, res) => {
     ).catch(err => res.status(500).send(err));
 });
 
+app.get(constants.fileEndpoint, (req, res) => {
+    StoresConnector.getFile(req.params.id).promise.then(response => {
+        res.status(200).send(response.body)
+    }).catch(err => res.status(500).send(
+        `error while getting file ${req.params.id}: ${err}`));
+});
+
 app.post(constants.filesAddEndpoint, (req, res) => {
     let buffers = [];
     req.on("data", buffer => buffers.push(buffer));
