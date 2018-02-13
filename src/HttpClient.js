@@ -24,6 +24,11 @@ class Request {
         this.req = superagent(options.method, url)
             .query(options.query)
             .set(options.headers);
+        // make superagent accept binary data in responses
+        if(options.responseType !== null && options.responseType
+                !== undefined) {
+            this.req.responseType(options.responseType);
+        }
         if(options.method === "POST" && data !== null) {
             this.req.send(data);
         }
@@ -44,24 +49,25 @@ class HttpClient {
         this.headers = this._addHeaders(headers, this.headers);
         return this;
     }
-    get(request_url, pathParams, queryObject) {
+    get(request_url, pathParams, queryObject, options) {
         return this.urlOpen(request_url, HttpClient.Options.GET,
-            pathParams, queryObject);
+            pathParams, queryObject, null, options);
     }
-    post(request_url, pathParams, queryObject, data) {
+    post(request_url, pathParams, queryObject, data, options) {
         return this.urlOpen(request_url, HttpClient.Options.POST,
-            pathParams, queryObject, data);
+            pathParams, queryObject, data, options);
     }
-    delete(requestUrl, pathParams, queryObject) {
+    delete(requestUrl, pathParams, queryObject, options) {
         return this.urlOpen(requestUrl, HttpClient.Options.DELETE,
-            pathParams, queryObject);
+            pathParams, queryObject, null, options);
     }
-    urlOpen(request_url, method, pathParams, queryObject, data) {
-        const options = {
+    urlOpen(request_url, method, pathParams, queryObject, data,
+            additionalOptions={}) {
+        const options = Object.assign(additionalOptions, {
             method: method,
             headers: this.headers,
             query: {}
-        };
+        });
         const path = new Path(request_url);
         if(pathParams !== null && pathParams !== undefined) {
             pathParams.forEach((value, key) => path.bind(key, value));
