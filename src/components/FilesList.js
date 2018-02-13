@@ -9,14 +9,33 @@ import PropTypes from "prop-types";
 import Filter from "./Filter";
 
 class File extends React.PureComponent {
+    constructor(props) {
+        super(props);
+        this.onClick = this.onClick.bind(this);
+    }
+    onClick() {
+        this.props.onClick(this.props.id);
+    }
     render() {
         return (
             <tr>
-                <td>{this.props.metadata.name}</td>
+                <td><a onClick={this.onClick}>{this.props.metadata.name}</a></td>
             </tr>
         );
     }
 }
+
+File.propTypes = {
+    id: PropTypes.number,
+    onClick: PropTypes.func,
+    metadata: PropTypes.object
+};
+
+File.defaultProps = {
+    id: -1,
+    onClick: id => console.log(`no-op handler for File.onClick: ${id}`),
+    metadata: {}
+};
 
 class FilesList extends React.Component {
     constructor(props) {
@@ -45,7 +64,7 @@ class FilesList extends React.Component {
                         this.props.metadataList.filter(item =>
                             this.state.agency === 0 ||
                             item.metadata.agency === this.state.agency)
-                            .map(item => <File key={item.id}
+                            .map(item => <File key={item.id} id={item.id}
                             metadata={item.metadata}/>
                         )}
                     </tbody>
