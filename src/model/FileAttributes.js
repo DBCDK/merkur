@@ -18,6 +18,15 @@ const mapResponseToMetadataList = response => {
     return list.map(item => FileAttributes.fromJson(item));
 };
 
+const getFile = id => {
+    const params = new Map();
+    params.set("id", id);
+    const request = new HttpClient()
+        .get(constants.fileEndpoint, params, null,
+        {"responseType": "blob"});
+    return request.promise;
+};
+
 class FileAttributes {
     static fromJson(json) {
         /*
@@ -35,4 +44,4 @@ class FileAttributes {
     }
 }
 
-export {getFileMetadata, mapResponseToMetadataList, FileAttributes};
+export {getFile, getFileMetadata, mapResponseToMetadataList, FileAttributes};

@@ -42,9 +42,13 @@ class FilesList extends React.Component {
         super(props);
         this.state = {agency: 0};
         this.onAgencyFilterInput = this.onAgencyFilterInput.bind(this);
+        this.onItemClick = this.onItemClick.bind(this);
     }
     onAgencyFilterInput(agency) {
         this.setState({agency});
+    }
+    onItemClick(id) {
+        this.props.onItemClick(id);
     }
     render() {
         const agencies = Array.from(new Set(this.props.metadataList.map(
@@ -65,7 +69,7 @@ class FilesList extends React.Component {
                             this.state.agency === 0 ||
                             item.metadata.agency === this.state.agency)
                             .map(item => <File key={item.id} id={item.id}
-                            metadata={item.metadata}/>
+                            metadata={item.metadata} onClick={this.onItemClick}/>
                         )}
                     </tbody>
                 </table>
