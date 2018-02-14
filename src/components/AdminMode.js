@@ -7,13 +7,23 @@ import React from "react";
 
 import FilesList from "./FilesList";
 import {
-    getFileMetadata, mapResponseToMetadataList
+    getFile, getFileMetadata, mapResponseToMetadataList
 } from "../model/FileAttributes";
 
 class AdminMode extends React.Component {
     constructor(props) {
         super(props);
         this.state = {files: []}
+        this.getBlobUrl = this.getBlobUrl.bind(this);
+    }
+    getBlobUrl(id) {
+        return new Promise((resolve, reject) => {
+            getFile(id).then(res => {
+                resolve(URL.createObjectURL(res.body));
+            }).catch(err => {
+                reject(`error generating download url for file ${id}: ${err}`);
+            });
+        });
     }
     componentWillMount() {
         getFileMetadata({"origin": "posthus"}).then(response => {
@@ -23,7 +33,7 @@ class AdminMode extends React.Component {
     }
     render() {
         return (
-            <FilesList metadataList={this.state.files}/>
+            <FilesList metadataList={this.state.files} getBlobUrl={this.getBlobUrl}/>
         );
     }
 }

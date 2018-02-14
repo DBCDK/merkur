@@ -7,6 +7,7 @@ import {HttpClient} from "./HttpClient.js";
 
 const FILESTORE_URL = process.env.FILESTORE_URL || "filestore-url-not-set";
 
+const FILE = "files/:id";
 const FILES_COLLECTION = "files";
 
 class StoresConnector {
@@ -15,6 +16,13 @@ class StoresConnector {
             .addHeaders({"Content-type": "application/octet-stream"})
             .post(`${FILESTORE_URL}/${FILES_COLLECTION}`,
                 null, null, data);
+    }
+    static getFile(id) {
+        const params = new Map();
+        params.set("id", id);
+        return new HttpClient()
+            .get(`${FILESTORE_URL}/${FILE}`, params, null,
+            {"responseType": "blob"});
     }
     static addMetadata(url, data) {
         return new HttpClient()

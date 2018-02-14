@@ -8,15 +8,37 @@ import PropTypes from "prop-types";
 
 import Filter from "./Filter";
 
-class File extends React.PureComponent {
+class File extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {url: "not-found"};
+    }
+    componentWillMount() {
+        this.props.getBlobUrl(this.props.id).then(res =>
+            this.setState({url: res})
+        ).catch(err =>
+            alert("error while getting file download link: " + err));
+    }
     render() {
         return (
             <tr>
-                <td>{this.props.metadata.name}</td>
+                <td><a href={this.state.url} download={this.props.metadata.name}>{this.props.metadata.name}</a></td>
             </tr>
         );
     }
 }
+
+File.propTypes = {
+    getBlobUrl: PropTypes.func,
+    id: PropTypes.number,
+    metadata: PropTypes.object
+};
+
+File.defaultProps = {
+    getBlobUrl: id => Promise.resolve(`no-op promise for ${id}`),
+    id: -1,
+    metadata: {}
+};
 
 class FilesList extends React.Component {
     constructor(props) {
@@ -45,8 +67,9 @@ class FilesList extends React.Component {
                         this.props.metadataList.filter(item =>
                             this.state.agency === 0 ||
                             item.metadata.agency === this.state.agency)
-                            .map(item => <File key={item.id}
-                            metadata={item.metadata}/>
+                            .map(item => <File key={item.id} id={item.id}
+                            metadata={item.metadata}
+                            getBlobUrl={this.props.getBlobUrl}/>
                         )}
                     </tbody>
                 </table>
