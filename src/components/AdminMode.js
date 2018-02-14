@@ -14,15 +14,16 @@ class AdminMode extends React.Component {
     constructor(props) {
         super(props);
         this.state = {files: []}
-        this.onItemClick = this.onItemClick.bind(this);
+        this.getBlobUrl = this.getBlobUrl.bind(this);
     }
-    onItemClick(id) {
-        getFile(id).then(res =>{
-            // we need a way of streaming the blob to the client which
-            // is supported by modern browser and allows us to set a filename
-            window.open(URL.createObjectURL(res.body));
-        }).catch(err => alert(
-            `error generating download url for file ${id}: ${err}`));
+    getBlobUrl(id) {
+        return new Promise((resolve, reject) => {
+            getFile(id).then(res => {
+                resolve(URL.createObjectURL(res.body));
+            }).catch(err => {
+                reject(`error generating download url for file ${id}: ${err}`);
+            });
+        });
     }
     componentWillMount() {
         getFileMetadata({"origin": "posthus"}).then(response => {
@@ -32,7 +33,7 @@ class AdminMode extends React.Component {
     }
     render() {
         return (
-            <FilesList metadataList={this.state.files} onItemClick={this.onItemClick}/>
+            <FilesList metadataList={this.state.files} getBlobUrl={this.getBlobUrl}/>
         );
     }
 }

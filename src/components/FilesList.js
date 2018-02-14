@@ -8,32 +8,35 @@ import PropTypes from "prop-types";
 
 import Filter from "./Filter";
 
-class File extends React.PureComponent {
+class File extends React.Component {
     constructor(props) {
         super(props);
-        this.onClick = this.onClick.bind(this);
+        this.state = {url: "not-found"};
     }
-    onClick() {
-        this.props.onClick(this.props.id);
+    componentWillMount() {
+        this.props.getBlobUrl(this.props.id).then(res =>
+            this.setState({url: res})
+        ).catch(err =>
+            alert("error while getting file download link: " + err));
     }
     render() {
         return (
             <tr>
-                <td><a onClick={this.onClick}>{this.props.metadata.name}</a></td>
+                <td><a href={this.state.url} download={this.props.metadata.name}>{this.props.metadata.name}</a></td>
             </tr>
         );
     }
 }
 
 File.propTypes = {
+    getBlobUrl: PropTypes.func,
     id: PropTypes.number,
-    onClick: PropTypes.func,
     metadata: PropTypes.object
 };
 
 File.defaultProps = {
+    getBlobUrl: id => Promise.resolve(`no-op promise for ${id}`),
     id: -1,
-    onClick: id => console.log(`no-op handler for File.onClick: ${id}`),
     metadata: {}
 };
 
@@ -42,13 +45,9 @@ class FilesList extends React.Component {
         super(props);
         this.state = {agency: 0};
         this.onAgencyFilterInput = this.onAgencyFilterInput.bind(this);
-        this.onItemClick = this.onItemClick.bind(this);
     }
     onAgencyFilterInput(agency) {
         this.setState({agency});
-    }
-    onItemClick(id) {
-        this.props.onItemClick(id);
     }
     render() {
         const agencies = Array.from(new Set(this.props.metadataList.map(
@@ -69,7 +68,8 @@ class FilesList extends React.Component {
                             this.state.agency === 0 ||
                             item.metadata.agency === this.state.agency)
                             .map(item => <File key={item.id} id={item.id}
-                            metadata={item.metadata} onClick={this.onItemClick}/>
+                            metadata={item.metadata}
+                            getBlobUrl={this.props.getBlobUrl}/>
                         )}
                     </tbody>
                 </table>
