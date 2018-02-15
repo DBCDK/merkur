@@ -18,7 +18,7 @@ describe("HttpClient requests", () => {
         params.set("version", 10);
         const request = new HttpClient().get(TEST_URL + "/version/:version",
             params)
-        return request.promise.then(res => {
+        return request.end().then(res => {
             expect(res).to.have.property("body");
             expect(res.body).to.deep.equal(
                 {"name": "spongebob scaredypants"});
@@ -28,7 +28,7 @@ describe("HttpClient requests", () => {
     it("failing get request", () => {
         nock(TEST_URL).get("/").reply(500);
         const request = new HttpClient().get(TEST_URL);
-        return request.promise.catch(res => {
+        return request.end().catch(res => {
             expect(res).to.have.property("status");
             expect(res.status).to.equal(500);
         });
@@ -39,7 +39,7 @@ describe("HttpClient requests", () => {
             .reply(200, "success");
         const request = new HttpClient().post(TEST_URL, null, null,
             {"name": "patrick pinhead"});
-        return request.promise.then(res => {
+        return request.end().then(res => {
             expect(res).to.have.property("text");
             expect(res.text).to.equal("success");
         });
@@ -48,7 +48,7 @@ describe("HttpClient requests", () => {
     it("failing post request", () => {
         nock(TEST_URL).post("/").reply(500);
         const request = new HttpClient().post(TEST_URL);
-        return request.promise.catch(res => {
+        return request.end().catch(res => {
             expect(res).to.have.property("status");
             expect(res.status).to.equal(500);
         });
@@ -57,7 +57,7 @@ describe("HttpClient requests", () => {
     it("successful delete request", () => {
         nock(TEST_URL).delete("/").reply(200, "success");
         const request = new HttpClient().delete(TEST_URL);
-        return request.promise.then(res => {
+        return request.end().then(res => {
             expect(res).to.have.property("text");
             expect(res.text).to.equal("success");
         });
@@ -66,7 +66,7 @@ describe("HttpClient requests", () => {
     it("failing delete request", () => {
         nock(TEST_URL).delete("/").reply(500);
         const request = new HttpClient().delete(TEST_URL);
-        return request.promise.catch(res => {
+        return request.end().catch(res => {
             expect(res).to.have.property("status");
             expect(res.status).to.equal(500);
         });
@@ -82,7 +82,7 @@ describe("HttpClient requests", () => {
             .addHeaders({"User-Agent": "spongebrowser"})
             .urlOpen(TEST_URL + "/version/:version", HttpClient.Options.POST,
             params, {"boss": "eugene+krabs"});
-        return request.promise.then(res => {
+        return request.end().then(res => {
             expect(res).to.have.property("text");
             expect(res.text).to.equal("success");
         });

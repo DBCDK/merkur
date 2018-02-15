@@ -9,13 +9,13 @@ import {HttpClient} from "../HttpClient";
 class Uploader {
     static uploadFileWithMetadata(fileData, metadata) {
         const httpClient = new HttpClient();
-        httpClient.post(constants.filesAddEndpoint, null, null, fileData).promise
+        httpClient.post(constants.filesAddEndpoint, null, null, fileData).end()
                 .then(response => {
             const json = JSON.parse(response.text);
             const metadataRequest = {"url": json.header.location,
                 "metadata": metadata};
             return httpClient.post(constants.filesAddMetadataEndpoint,
-                null, null, metadataRequest).promise;
+                null, null, metadataRequest).end();
         }).catch(err => console.error(err));
     }
 }

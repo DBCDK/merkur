@@ -26,13 +26,13 @@ app.post(constants.filesAddMetadataEndpoint, (req, res) => {
         return 1;
     }
     StoresConnector.addMetadata(req.body.url, req.body.metadata)
-            .promise.then(json =>
+            .end().then(json =>
         res.status(200).send(json)
     ).catch(err => res.status(500).send(err));
 });
 
 app.get(constants.fileEndpoint, (req, res) => {
-    StoresConnector.getFile(req.params.id).promise.then(response => {
+    StoresConnector.getFile(req.params.id).end().then(response => {
         res.status(200).send(response.body)
     }).catch(err => res.status(500).send(
         `error while getting file ${req.params.id}: ${err}`));
@@ -54,14 +54,14 @@ app.post(constants.filesAddEndpoint, (req, res) => {
             buffer.copy(data, pos);
             pos += buffer.length;
         });
-        StoresConnector.addFile(data).promise.then(json => {
+        StoresConnector.addFile(data).end().then(json => {
             res.status(200).send(json);
         }).catch(err => res.status(500).send(err));
     });
 });
 
 app.post(constants.filesSearchEndpoint, (req, res) => {
-    StoresConnector.searchFiles(req.body).promise.then(json =>
+    StoresConnector.searchFiles(req.body).end().then(json =>
         res.status(200).send(json.text)
     ).catch(err => res.status(500).send(err));
 });
