@@ -15,7 +15,9 @@ const app = new Express();
 const server = new Server(app);
 app.use(Express.static(path.join(__dirname, "static")));
 // necessary for parsing POST request bodies
-app.use(BodyParser.json());
+app.use(BodyParser.json({
+    type: "application/json"
+}));
 
 app.post(constants.filesAddMetadataEndpoint, (req, res) => {
     if(req.body.url === undefined) {
@@ -39,26 +41,36 @@ app.get(constants.fileEndpoint, (req, res) => {
 });
 
 app.post(constants.filesAddEndpoint, (req, res) => {
-    let buffers = [];
-    req.on("data", buffer => buffers.push(buffer));
-    req.on("end", () => {
-        let size = 0;
-        buffers.forEach(buffer => size += buffer.length);
-        if(size === 0) {
-            res.status(400).send("must supply a non-empty request entity");
-            return 1;
-        }
-        const data = Buffer.alloc(size);
-        let pos = 0;
-        buffers.forEach(buffer => {
-            buffer.copy(data, pos);
-            pos += buffer.length;
+    addFile(req).then(json => res.status(200).send(json))
+        .catch(err => {
+            if(err.status !== undefined && err.msg !== undefined) {
+                res.status(err.status).send(err.msg);
+            } else {
+                res.status(500).send(err);
+            }
         });
-        StoresConnector.addFile(data).end().then(json => {
-            res.status(200).send(json);
-        }).catch(err => res.status(500).send(err));
-    });
 });
+
+const addFile = req => {
+    return new Promise((resolve, reject) => {
+        const request = StoresConnector.addFile(null);
+        let size = 0;
+        req.on("data", buffer => {
+            request.write(buffer);
+            size += buffer.length;
+        });
+        req.on("end", () => {
+            if(size === 0) {
+                reject({
+                    status: 400,
+                    msg: "must supply a non-empty request entity"
+                });
+            }
+            request.end().then(json => resolve(json))
+                .catch(err => reject(err));
+        });
+    });
+};
 
 app.post(constants.filesSearchEndpoint, (req, res) => {
     StoresConnector.searchFiles(req.body).end().then(json =>
