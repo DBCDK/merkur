@@ -15,6 +15,9 @@ class Request {
     end() {
         return this.request;
     }
+    write(data) {
+        this.request.write(data);
+    }
     abort() {
         if(this.request !== undefined) {
             this.request.abort();
