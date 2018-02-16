@@ -35,7 +35,7 @@ class Request {
                 !== undefined) {
             req.responseType(options.responseType);
         }
-        if(options.method === "POST" && data !== null) {
+        if(options.method === HttpClient.Options.POST && data !== null) {
             req.send(data);
         }
         return req;
