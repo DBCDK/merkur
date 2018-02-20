@@ -12,6 +12,15 @@ class FileMetadata {
     toJson() {
         return JSON.stringify(this);
     }
+    static verify(metadata) {
+        const requiredFields = ["name", "agency", "origin"];
+        if(!requiredFields.every(field => metadata[field] !== undefined &&
+                metadata[field] !== null)) {
+            return false;
+        }
+        if(!Number.isSafeInteger(metadata.agency)) return false;
+        return true;
+    }
 }
 
 export default FileMetadata;

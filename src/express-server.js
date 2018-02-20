@@ -10,6 +10,7 @@ import {Server} from "http";
 import path from "path";
 
 import constants from "./constants";
+import FileMetadata from "./model/FileMetadata";
 import StoresConnector from "./StoresConnector";
 
 const app = new Express();
@@ -46,6 +47,9 @@ const handleMetadata = (url, metadata, res) => {
         return res.status(400).send("request missing url in json body");
     } else if(metadata === undefined || metadata === null) {
         return res.status(400).send("request missing metadata in json body");
+    } else if(!FileMetadata.verify(metadata)) {
+        return res.status(400).send(`request metadata ` +
+            `${JSON.stringify(metadata)} does not pass validation`);
     }
     StoresConnector.addMetadata(url, metadata)
             .end().then(json =>
@@ -68,6 +72,9 @@ const handleFileFormData = (req, res) => {
     busboy.on("finish", () => {
         if(promise === null) {
             return res.status(400).send("must specify file to upload");
+        }
+        if(metadata.origin === undefined || metadata.origin === null) {
+            metadata.origin = constants.defaultOrigin;
         }
         promise.then(addFileResponse => {
                 const url = addFileResponse.headers.location;

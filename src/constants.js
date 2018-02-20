@@ -7,7 +7,8 @@ const constants = {
     fileEndpoint: "/files/:id",
     filesAddEndpoint: "/files/add",
     filesAddMetadataEndpoint: "/files/metadata",
-    filesSearchEndpoint: "/files/search"
+    filesSearchEndpoint: "/files/search",
+    defaultOrigin: "posthus"
 };
 Object.freeze(constants);
 
