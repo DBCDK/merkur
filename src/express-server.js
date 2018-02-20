@@ -21,11 +21,9 @@ app.use(BodyParser.json({
 
 app.post(constants.filesAddMetadataEndpoint, (req, res) => {
     if(req.body.url === undefined) {
-        res.status(400).send("request missing url in json body");
-        return 1;
+        return res.status(400).send("request missing url in json body");
     } else if(req.body.metadata === undefined) {
-        res.status(400).send("request missing metadata in json body");
-        return 1;
+        return res.status(400).send("request missing metadata in json body");
     }
     StoresConnector.addMetadata(req.body.url, req.body.metadata)
             .end().then(json =>
