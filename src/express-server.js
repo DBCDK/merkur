@@ -67,7 +67,12 @@ const handleFileFormData = (req, res) => {
     });
     busboy.on("field", (fieldname, value, fieldnameTruncated,
             valueTruncated, encoding, mimetype) => {
-        metadata[fieldname] = value;
+        const valueAsInt = Number.parseInt(value);
+        if(!Number.isNaN(valueAsInt)) {
+            metadata[fieldname] = valueAsInt;
+        } else {
+            metadata[fieldname] = value;
+        }
     });
     busboy.on("finish", () => {
         if(promise === null) {
