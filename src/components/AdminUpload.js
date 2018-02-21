@@ -16,7 +16,7 @@ class AdminUpload extends React.Component {
     }
     onClick(file, data) {
         const reader = new FileReader();
-        reader.readAsBinaryString(file);
+        reader.readAsArrayBuffer(file);
         reader.onerror = err => {
             alert("error while uploading file: " + err);
         };

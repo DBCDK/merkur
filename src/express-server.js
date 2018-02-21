@@ -4,64 +4,134 @@
  */
 
 import BodyParser from "body-parser";
+import Busboy from "busboy";
 import Express from "express";
 import {Server} from "http";
 import path from "path";
 
 import constants from "./constants";
+import FileMetadata from "./model/FileMetadata";
 import StoresConnector from "./StoresConnector";
 
 const app = new Express();
 const server = new Server(app);
 app.use(Express.static(path.join(__dirname, "static")));
 // necessary for parsing POST request bodies
-app.use(BodyParser.json());
+app.use(BodyParser.json({
+    type: "application/json"
+}));
 
 app.post(constants.filesAddMetadataEndpoint, (req, res) => {
-    if(req.body.url === undefined) {
-        res.status(400).send("request missing url in json body");
-        return 1;
-    } else if(req.body.metadata === undefined) {
-        res.status(400).send("request missing metadata in json body");
-        return 1;
-    }
-    StoresConnector.addMetadata(req.body.url, req.body.metadata)
-            .promise.then(json =>
-        res.status(200).send(json)
-    ).catch(err => res.status(500).send(err));
+    return handleMetadata(req.body.url, req.body.metadata, res);
 });
 
 app.get(constants.fileEndpoint, (req, res) => {
-    StoresConnector.getFile(req.params.id).promise.then(response => {
+    StoresConnector.getFile(req.params.id).end().then(response => {
         res.status(200).send(response.body)
     }).catch(err => res.status(500).send(
         `error while getting file ${req.params.id}: ${err}`));
 });
 
 app.post(constants.filesAddEndpoint, (req, res) => {
-    let buffers = [];
-    req.on("data", buffer => buffers.push(buffer));
-    req.on("end", () => {
-        let size = 0;
-        buffers.forEach(buffer => size += buffer.length);
-        if(size === 0) {
-            res.status(400).send("must supply a non-empty request entity");
-            return 1;
-        }
-        const data = Buffer.alloc(size);
-        let pos = 0;
-        buffers.forEach(buffer => {
-            buffer.copy(data, pos);
-            pos += buffer.length;
-        });
-        StoresConnector.addFile(data).promise.then(json => {
-            res.status(200).send(json);
-        }).catch(err => res.status(500).send(err));
-    });
+    if(req.is("multipart/form-data")) {
+        return handleFileFormData(req, res);
+    } else if(req.is("application/octet-stream")) {
+        return handleFile(req, res);
+    } else {
+        res.sendStatus(415);
+    }
 });
 
+const handleMetadata = (url, metadata, res) => {
+    if(url === undefined || url === null) {
+        return res.status(400).send("request missing url in json body");
+    } else if(metadata === undefined || metadata === null) {
+        return res.status(400).send("request missing metadata in json body");
+    } else if(!FileMetadata.verify(metadata)) {
+        return res.status(400).send(`request metadata ` +
+            `${JSON.stringify(metadata)} does not pass validation`);
+    }
+    StoresConnector.addMetadata(url, metadata)
+            .end().then(json =>
+        res.status(200).send(json)
+    ).catch(err => res.status(500).send(err));
+};
+
+const handleFileFormData = (req, res) => {
+    const metadata = {};
+    let promise = null;
+    const busboy = new Busboy({headers: req.headers});
+    busboy.on("file", (fieldname, file, filename, encoding, mimetype) => {
+        metadata.name = filename;
+        promise = addFile(file).catch(err => handleError(filename, err, res));
+    });
+    busboy.on("field", (fieldname, value, fieldnameTruncated,
+            valueTruncated, encoding, mimetype) => {
+        const valueAsInt = Number.parseInt(value);
+        if(!Number.isNaN(valueAsInt)) {
+            metadata[fieldname] = valueAsInt;
+        } else {
+            metadata[fieldname] = value;
+        }
+    });
+    busboy.on("finish", () => {
+        if(promise === null) {
+            return res.status(400).send("must specify file to upload");
+        }
+        if(metadata.origin === undefined || metadata.origin === null) {
+            metadata.origin = constants.defaultOrigin;
+        }
+        promise.then(addFileResponse => {
+                const url = addFileResponse.headers.location;
+                return handleMetadata(url, metadata, res);
+            }).catch(err => handleError(metadata.name, err, res));
+    });
+    req.pipe(busboy);
+};
+
+const handleError = (filename, err, res) => {
+    if(err.status !== undefined && err.msg !== undefined) {
+        return res.status(err.status).send(err.msg);
+    } else {
+        return res.status(500).send(
+            `error uploading ${filename}: ${err}`);
+    }
+};
+
+const handleFile = (req, res) => {
+    addFile(req).then(json => res.status(200).send(json))
+        .catch(err => {
+            if(err.status !== undefined && err.msg !== undefined) {
+                res.status(err.status).send(err.msg);
+            } else {
+                res.status(500).send(err);
+            }
+        });
+};
+
+const addFile = file => {
+    return new Promise((resolve, reject) => {
+        const request = StoresConnector.addFile(null);
+        let size = 0;
+        file.on("data", buffer => {
+            request.write(buffer);
+            size += buffer.length;
+        });
+        file.on("end", () => {
+            if(size === 0) {
+                reject({
+                    status: 400,
+                    msg: "must supply a non-empty request entity"
+                });
+            }
+            request.end().then(json => resolve(json))
+                .catch(err => reject(err));
+        });
+    });
+};
+
 app.post(constants.filesSearchEndpoint, (req, res) => {
-    StoresConnector.searchFiles(req.body).promise.then(json =>
+    StoresConnector.searchFiles(req.body).end().then(json =>
         res.status(200).send(json.text)
     ).catch(err => res.status(500).send(err));
 });

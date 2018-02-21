@@ -10,31 +10,35 @@ import Path from "./Path";
 class Request {
     constructor(url, data, options) {
         this.aborted = false;
-        this.promise = this.makeRequest(url, data, options);
+        this.request = this.makeRequest(url, data, options);
+    }
+    end() {
+        return this.request;
+    }
+    write(data) {
+        this.request.write(data);
     }
     abort() {
-        if(this.req !== undefined) {
-            this.req.abort();
+        if(this.request !== undefined) {
+            this.request.abort();
             this.aborted = true;
         } else {
             console.warn("cannot abort while request is undefined");
         }
     }
     makeRequest(url, data, options) {
-        this.req = superagent(options.method, url)
+        const req = superagent(options.method, url)
             .query(options.query)
             .set(options.headers);
         // make superagent accept binary data in responses
         if(options.responseType !== null && options.responseType
                 !== undefined) {
-            this.req.responseType(options.responseType);
+            req.responseType(options.responseType);
         }
-        if(options.method === "POST" && data !== null) {
-            this.req.send(data);
+        if(options.method === HttpClient.Options.POST && data !== null) {
+            req.send(data);
         }
-        return new Promise((resolve, reject) => this.req
-            .then(response => resolve(response))
-            .catch(err => reject(err)));
+        return req;
     }
 }
 

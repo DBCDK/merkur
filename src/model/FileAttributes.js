@@ -10,7 +10,7 @@ const getFileMetadata = selector => {
     const request = new HttpClient()
         .addHeaders({"Content-type": "application/json"})
         .post(constants.filesSearchEndpoint, null, null, selector);
-    return request.promise;
+    return request.end();
 };
 
 const mapResponseToMetadataList = response => {
@@ -24,7 +24,7 @@ const getFile = id => {
     const request = new HttpClient()
         .get(constants.fileEndpoint, params, null,
         {"responseType": "blob"});
-    return request.promise;
+    return request.end();
 };
 
 class FileAttributes {

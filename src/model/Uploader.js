@@ -8,14 +8,16 @@ import {HttpClient} from "../HttpClient";
 
 class Uploader {
     static uploadFileWithMetadata(fileData, metadata) {
-        const httpClient = new HttpClient();
-        httpClient.post(constants.filesAddEndpoint, null, null, fileData).promise
+        const httpClient = new HttpClient()
+            .addHeaders({"Content-type": "application/octet-stream"});
+        httpClient.post(constants.filesAddEndpoint, null, null, fileData).end()
                 .then(response => {
             const json = JSON.parse(response.text);
             const metadataRequest = {"url": json.header.location,
                 "metadata": metadata};
-            return httpClient.post(constants.filesAddMetadataEndpoint,
-                null, null, metadataRequest).promise;
+            return httpClient.addHeaders({"Content-type": "application/json"})
+                .post(constants.filesAddMetadataEndpoint,
+                null, null, metadataRequest).end();
         }).catch(err => console.error(err));
     }
 }
