@@ -23,6 +23,7 @@ class File extends React.Component {
         return (
             <tr>
                 <td><a href={this.state.url} download={this.props.metadata.name}>{this.props.metadata.name}</a></td>
+                <td>{this.props.metadata.agency}</td>
             </tr>
         );
     }
@@ -60,6 +61,7 @@ class FilesList extends React.Component {
                     <thead>
                         <tr>
                             <th>name</th>
+                            <th>agency</th>
                         </tr>
                     </thead>
                     <tbody>
