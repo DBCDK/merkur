@@ -7,7 +7,7 @@ import constants from "../constants";
 import {HttpClient} from "../HttpClient";
 
 class Uploader {
-    static uploadFileWithMetadata(fileData, metadata) {
+    static uploadFileWithMetadata(fileData, metadata, onUploadCompleteCallback) {
         const httpClient = new HttpClient()
             .addHeaders({"Content-type": "application/octet-stream"});
         httpClient.post(constants.filesAddEndpoint, null, null, fileData).end()
@@ -17,7 +17,10 @@ class Uploader {
                 "metadata": metadata};
             return httpClient.addHeaders({"Content-type": "application/json"})
                 .post(constants.filesAddMetadataEndpoint,
-                null, null, metadataRequest).end();
+                null, null, metadataRequest).end()
+                .then(response => {
+                    onUploadCompleteCallback();
+                })
         }).catch(err => console.error(err));
     }
 }
