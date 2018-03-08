@@ -36,12 +36,14 @@ class File extends React.Component {
 File.propTypes = {
     getBlobUrl: PropTypes.func,
     id: PropTypes.number,
+    creationTime: PropTypes.number,
     metadata: PropTypes.object
 };
 
 File.defaultProps = {
     getBlobUrl: id => Promise.resolve(`no-op promise for ${id}`),
     id: -1,
+    creationTime: 0,
     metadata: {}
 };
 
