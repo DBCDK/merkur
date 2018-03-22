@@ -6,6 +6,7 @@
 import React from "react";
 
 import FilesList from "./FilesList";
+import Filter from "./Filter";
 import {
     getFile, getFileMetadata, mapResponseToMetadataList
 } from "../model/FileAttributes";
@@ -15,6 +16,7 @@ class AdminMode extends React.Component {
         super(props);
         this.state = {files: []}
         this.getBlobUrl = this.getBlobUrl.bind(this);
+        this.onAgencyFilterInput = this.onAgencyFilterInput.bind(this);
     }
     getBlobUrl(id) {
         return new Promise((resolve, reject) => {
@@ -31,9 +33,17 @@ class AdminMode extends React.Component {
             this.setState({files: metadataList});
         }).catch(err => alert("error getting file metadata: " + err));
     }
+    onAgencyFilterInput(agency) {
+        this.setState({agency});
+    }
     render() {
+        const agencies = Array.from(new Set(this.state.files.map(
+            item => item.metadata.agency)));
         return (
-            <FilesList metadataList={this.state.files} getBlobUrl={this.getBlobUrl}/>
+            <FilesList metadataList={this.state.files}
+                    getBlobUrl={this.getBlobUrl} agency={this.state.agency}>
+                <Filter items={agencies} onInput={this.onAgencyFilterInput}/>
+            </FilesList>
         );
     }
 }
