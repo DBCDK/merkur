@@ -136,6 +136,12 @@ app.post(constants.filesSearchEndpoint, (req, res) => {
     ).catch(err => res.status(500).send(err));
 });
 
+app.post(constants.authorizeHash, (req, res) => {
+    StoresConnector.authorizeHash(req.body.hash).end()
+        .then(({text}) => res.status(200).send(text))
+        .catch(err => res.status(500).send(err));
+});
+
 // handle the rest of the routing in the client
 app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "/static/index.html"));
