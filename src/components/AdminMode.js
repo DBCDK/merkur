@@ -4,17 +4,41 @@
  */
 
 import React from "react";
+import queryString from "query-string";
 
+import AgencyIdConverter from "../model/AgencyIdConverter";
 import FilesList from "./FilesList";
 import Filter from "./Filter";
+import LoginAuthorizer from "../model/LoginAuthorizer";
 import {
     getFile, getFileMetadata, mapResponseToMetadataList
 } from "../model/FileAttributes";
 
+class ErrorView extends React.Component {
+    render() {
+        return (
+            <p className="error">{this.props.error}</p>
+        );
+    }
+}
+
 class AdminMode extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {files: []}
+        this.state = {files: [], agency: -1, internalUser: false}
+        const qs = queryString.parse(this.props.location.search);
+        LoginAuthorizer.authorizeHash(qs.hash).then(res => {
+                const agencyid = AgencyIdConverter.agencyIdFromString(res);
+                if(agencyid === 10100) {
+                    this.setState({agency: 0, internalUser: true});
+                } else {
+                    this.setState({agency: agencyid});
+                }
+            })
+            .catch(error => {
+                console.error("error getting agency id", error);
+                this.setState({error});
+            });
         this.getBlobUrl = this.getBlobUrl.bind(this);
         this.onAgencyFilterInput = this.onAgencyFilterInput.bind(this);
     }
@@ -40,10 +64,17 @@ class AdminMode extends React.Component {
         const agencies = Array.from(new Set(this.state.files.map(
             item => item.metadata.agency)));
         return (
-            <FilesList metadataList={this.state.files}
-                    getBlobUrl={this.getBlobUrl} agency={this.state.agency}>
-                <Filter items={agencies} onInput={this.onAgencyFilterInput}/>
-            </FilesList>
+            <div>
+                {this.state.error !== undefined ? (
+                    <ErrorView error={`error showing files list: ${this.state.error}`}/>
+                ) : (<span/>)}
+                <FilesList metadataList={this.state.files}
+                        getBlobUrl={this.getBlobUrl} agency={this.state.agency}>
+                    {this.state.internalUser ? (
+                            <Filter items={agencies} onInput={this.onAgencyFilterInput}/>
+                        ) : (<span/>)}
+                </FilesList>
+            </div>
         );
     }
 }

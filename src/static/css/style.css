@@ -16,3 +16,8 @@
 	width: 80%;
 	float: right;
 }
+
+.error {
+	color: red;
+	font-size: 130%;
+}
