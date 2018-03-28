@@ -9,6 +9,7 @@ const constants = {
     filesAddEndpoint: "/files/add",
     filesAddMetadataEndpoint: "/files/metadata",
     filesSearchEndpoint: "/files/search",
+    getRedirectUrl: "/netpunkt-redirect/url",
     defaultOrigin: "posthus"
 };
 Object.freeze(constants);

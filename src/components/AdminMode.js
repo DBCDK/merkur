@@ -10,6 +10,7 @@ import AgencyIdConverter from "../model/AgencyIdConverter";
 import FilesList from "./FilesList";
 import Filter from "./Filter";
 import LoginAuthorizer from "../model/LoginAuthorizer";
+import RedirectUrlHandler from "../model/RedirectUrlHandler";
 import {
     getFile, getFileMetadata, mapResponseToMetadataList
 } from "../model/FileAttributes";
@@ -37,7 +38,15 @@ class AdminMode extends React.Component {
             })
             .catch(error => {
                 console.error("error getting agency id", error);
-                this.setState({error});
+                RedirectUrlHandler.getRedirectUrl()
+                    // use window.open instead of Redirect from
+                    // react-router-dom because we need to go to another domain
+                    .then(res => window.open(res.text))
+                    .catch(redirectError => {
+                        console.error("error getting redirect url",
+                            redirectError);
+                        this.setState({error});
+                    });
             });
         this.getBlobUrl = this.getBlobUrl.bind(this);
         this.onAgencyFilterInput = this.onAgencyFilterInput.bind(this);
