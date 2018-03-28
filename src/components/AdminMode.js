@@ -3,6 +3,7 @@
  * See license text in LICENSE.txt or at https://opensource.dbc.dk/licenses/gpl-3.0/
  */
 
+import Cookies from "universal-cookie";
 import React from "react";
 import queryString from "query-string";
 
@@ -23,31 +24,18 @@ class ErrorView extends React.Component {
     }
 }
 
+function getAgencyIdState(agencyid) {
+    if(agencyid === 10100) {
+        return {agency: 0, internalUser: true};
+    } else {
+        return {agency: agencyid};
+    }
+}
+
 class AdminMode extends React.Component {
     constructor(props) {
         super(props);
         this.state = {files: [], agency: -1, internalUser: false}
-        const qs = queryString.parse(this.props.location.search);
-        LoginAuthorizer.authorizeHash(qs.hash).then(res => {
-                const agencyid = AgencyIdConverter.agencyIdFromString(res);
-                if(agencyid === 10100) {
-                    this.setState({agency: 0, internalUser: true});
-                } else {
-                    this.setState({agency: agencyid});
-                }
-            })
-            .catch(error => {
-                console.error("error getting agency id", error);
-                RedirectUrlHandler.getRedirectUrl()
-                    // use window.open instead of Redirect from
-                    // react-router-dom because we need to go to another domain
-                    .then(res => window.open(res.text))
-                    .catch(redirectError => {
-                        console.error("error getting redirect url",
-                            redirectError);
-                        this.setState({error});
-                    });
-            });
         this.getBlobUrl = this.getBlobUrl.bind(this);
         this.onAgencyFilterInput = this.onAgencyFilterInput.bind(this);
     }
@@ -61,6 +49,33 @@ class AdminMode extends React.Component {
         });
     }
     componentWillMount() {
+        const cookies = new Cookies();
+        if(cookies.get("netpunkt-auth")) {
+            const agencyid = AgencyIdConverter.agencyIdFromString(
+                cookies.get("netpunkt-auth"));
+            this.setState(getAgencyIdState(agencyid));
+        } else {
+            const qs = queryString.parse(this.props.location.search);
+            LoginAuthorizer.authorizeHash(qs.hash).then(res => {
+                    const agencyid = AgencyIdConverter.agencyIdFromString(res);
+                    this.setState(getAgencyIdState(agencyid));
+                    // should also have {secure: true}
+                    // 86400: 24H in seconds
+                    cookies.set("netpunkt-auth", agencyid, {maxAge: 86400});
+                })
+                .catch(error => {
+                    console.error("error getting agency id", error);
+                    RedirectUrlHandler.getRedirectUrl()
+                        // use window.open instead of Redirect from
+                        // react-router-dom because we need to go to another domain
+                        .then(res => window.open(res.text))
+                        .catch(redirectError => {
+                            console.error("error getting redirect url",
+                                redirectError);
+                            this.setState({error});
+                        });
+                });
+        }
         getFileMetadata({"origin": "posthus"}).then(response => {
             const metadataList = mapResponseToMetadataList(response.text);
             this.setState({files: metadataList});
