@@ -6,8 +6,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import Filter from "./Filter";
-
 class File extends React.Component {
     constructor(props) {
         super(props);
@@ -48,21 +46,11 @@ File.defaultProps = {
 };
 
 class FilesList extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {agency: 0};
-        this.onAgencyFilterInput = this.onAgencyFilterInput.bind(this);
-    }
-    onAgencyFilterInput(agency) {
-        this.setState({agency});
-    }
     render() {
-        const agencies = Array.from(new Set(this.props.metadataList.map(
-            item => item.metadata.agency)));
         return (
             <div>
                 <h2>files:</h2>
-                <Filter items={agencies} onInput={this.onAgencyFilterInput}/>
+                {this.props.children}
                 <table className="table">
                     <thead>
                         <tr>
@@ -74,8 +62,8 @@ class FilesList extends React.Component {
                     <tbody>
                         {
                         this.props.metadataList.filter(item =>
-                            this.state.agency === 0 ||
-                            item.metadata.agency === this.state.agency)
+                            this.props.agency === 0 ||
+                            item.metadata.agency === this.props.agency)
                             .map(item => <File key={item.id} id={item.id}
                             creationTime={item.creationTime}
                             metadata={item.metadata}
@@ -89,10 +77,12 @@ class FilesList extends React.Component {
 }
 
 FilesList.propTypes = {
+    agency: PropTypes.number,
     metadataList: PropTypes.array
 };
 
 FilesList.defaultProps = {
+    agency: -1,
     metadataList: []
 };
 

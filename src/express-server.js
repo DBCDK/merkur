@@ -136,6 +136,27 @@ app.post(constants.filesSearchEndpoint, (req, res) => {
     ).catch(err => res.status(500).send(err));
 });
 
+app.post(constants.authorizeHash, (req, res) => {
+    StoresConnector.authorizeHash(req.body.hash).end()
+        .then(({text}) => res.status(200).send(text))
+        .catch(err => res.status(500).send(err));
+});
+
+app.get(constants.getRedirectUrl, (req, res) => {
+    /** send the redirect url via an endpoint because we don't want to
+     * build it into the client side code with webpack.EnvironmentPlugin
+     * since this would require us to have different builds for our
+     * different environments instead of one build configurable by
+     * environment variables
+     */
+    const redirectUrl = process.env.NETPUNKT_REDIRECT_URL;
+    if(redirectUrl !== undefined && redirectUrl !== null) {
+        res.status(200).send(redirectUrl);
+    } else {
+        res.status(500).send("netpunkt redirect url is not set");
+    }
+});
+
 // handle the rest of the routing in the client
 app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "/static/index.html"));

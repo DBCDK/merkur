@@ -6,11 +6,17 @@
 import {HttpClient} from "./HttpClient.js";
 
 const FILESTORE_URL = process.env.FILESTORE_URL || "filestore-url-not-set";
+const NETPUNKT_AUTHENTICATION_URL = process.env.NETPUNKT_AUTHENTICATION_URL
+    || "netpunkt-authentication-url-not-set";
 
 const FILE = "files/:id";
 const FILES_COLLECTION = "files";
 
 class StoresConnector {
+    static authorizeHash(hash) {
+        return new HttpClient()
+            .post(NETPUNKT_AUTHENTICATION_URL, null, null, `hash=${hash}`);
+    }
     static addFile(data) {
         return new HttpClient()
             .addHeaders({"Content-type": "application/octet-stream"})
