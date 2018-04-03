@@ -12,11 +12,19 @@ module.exports = {
         filename: "bundle.js"
     },
     module: {
-        loaders: [
+        rules: [
             {
                 test: /\.js$/,
-                exclude: /(node_modules)/,
-                loader: "babel-loader"
+                include: [
+                    path.resolve(__dirname, "src"),
+                    // building with UglifyJsPlugin fails if these modules
+                    // are not transformed
+                    path.resolve(__dirname, "node_modules", "query-string"),
+                    path.resolve(__dirname, "node_modules", "strict-uri-encode")
+                ],
+                use: [
+                    { loader: "babel-loader" }
+                ]
             }
         ]
     }
