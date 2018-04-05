@@ -98,5 +98,7 @@ FilesList.defaultProps = {
     metadataList: []
 };
 
-export default FilesList;
-export {File};
+export {
+    FilesList,
+    File
+};
