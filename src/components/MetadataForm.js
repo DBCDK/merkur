@@ -8,6 +8,8 @@ import PropTypes from "prop-types";
 
 import FileMetadata from "../model/FileMetadata";
 import UploadForm from "./UploadForm";
+import {I18n} from 'react-i18next';
+import i18n from '../i18n';
 
 class MetadataForm extends React.Component {
     constructor(props) {
@@ -19,7 +21,7 @@ class MetadataForm extends React.Component {
     onClick(event) {
         event.preventDefault();
         if(this.state.file === null) {
-            alert("no file selected");
+            alert(i18n.t('Upload_no_file_choosen'));
             return 1;
         }
         const form = event.target.form;
@@ -32,18 +34,26 @@ class MetadataForm extends React.Component {
     }
     render() {
         return (
-            <form>
-                <div className="form-group">
-                    <label htmlFor="name">name:</label>
-                    <input type="text" name="name"/>
-                </div>
-                <div className="form-group">
-                    <label htmlFor="agency">agency:</label>
-                    <input type="text" inputMode="numeric" pattern="\d+" name="agency"/>
-                </div>
-                <UploadForm onFilesChosen={this.onFilesChosen}/>
-                <button type="submit" onClick={this.onClick}>upload</button>
-            </form>
+            <I18n>
+                {
+                    (t) => {
+                        return (
+                            <form>
+                                <div className="form-group">
+                                    <label htmlFor="name">{t('File_name')}:</label>
+                                    <input type="text" name="name"/>
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="agency">{t('File_agency')}:</label>
+                                    <input type="text" inputMode="numeric" pattern="\d+" name="agency"/>
+                                </div>
+                                <UploadForm onFilesChosen={this.onFilesChosen}/>
+                                <button type="submit" onClick={this.onClick}>upload</button>
+                            </form>
+                        )
+                    }
+                }
+            </I18n>
         );
     }
 }
