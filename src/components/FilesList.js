@@ -23,12 +23,22 @@ class File extends React.Component {
                 <td><a href={this.state.url} download={this.props.metadata.name}>{this.props.metadata.name}</a></td>
                 <td>{this.props.metadata.agency}</td>
                 <td>{File.formatCreationTime(this.props.creationTime)}</td>
+                <td>{File.byteSizeToHumanReadableSI(this.props.byteSize)}</td>
             </tr>
         );
     }
     static formatCreationTime(millisecondsSinceEpoch) {
         return new Date(millisecondsSinceEpoch).toLocaleString('da-DK')
     }
+    /*
+     * We use the units kilo, mega, giga, etc., in a manner consistent
+     * with their meaning in the International System of Units (SI),
+     * namely as powers of 1000.
+     */
+    static byteSizeToHumanReadableSI(bytes) {
+        const e = (Math.log(bytes) / Math.log(1e3)) | 0;
+        return +(bytes / Math.pow(1e3, e)).toFixed(2) + ' ' + ('kMGTPEZY'[e - 1] || '') + 'B';
+    };
 }
 
 File.propTypes = {
@@ -57,6 +67,7 @@ class FilesList extends React.Component {
                             <th>name</th>
                             <th>agency</th>
                             <th>creation time</th>
+                            <th>Størrelse</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -66,6 +77,7 @@ class FilesList extends React.Component {
                             item.metadata.agency === this.props.agency)
                             .map(item => <File key={item.id} id={item.id}
                             creationTime={item.creationTime}
+                            byteSize={item.byteSize}
                             metadata={item.metadata}
                             getBlobUrl={this.props.getBlobUrl}/>
                         )}
@@ -86,4 +98,7 @@ FilesList.defaultProps = {
     metadataList: []
 };
 
-export default FilesList;
+export {
+    FilesList,
+    File
+};

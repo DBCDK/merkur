@@ -8,7 +8,7 @@ import React from "react";
 import queryString from "query-string";
 
 import AgencyIdConverter from "../model/AgencyIdConverter";
-import FilesList from "./FilesList";
+import {FilesList} from "./FilesList";
 import Filter from "./Filter";
 import LoginAuthorizer from "../model/LoginAuthorizer";
 import RedirectUrlHandler from "../model/RedirectUrlHandler";
