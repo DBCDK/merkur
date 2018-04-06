@@ -30,7 +30,7 @@ class File extends React.Component {
         );
     }
     static formatCreationTime(millisecondsSinceEpoch) {
-        return new Date(millisecondsSinceEpoch).toLocaleString('da-DK')
+        return new Date(millisecondsSinceEpoch).toLocaleString(i18n.language)
     }
     /*
      * We use the units kilo, mega, giga, etc., in a manner consistent
