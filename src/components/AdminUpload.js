@@ -8,6 +8,8 @@ import React from "react";
 import MetadataForm from "./MetadataForm";
 import BusySpinner from './BusySpinner';
 import Uploader from "../model/Uploader";
+import {I18n} from 'react-i18next';
+import i18n from '../i18n';
 
 class AdminUpload extends React.Component {
     constructor(props) {
@@ -27,7 +29,7 @@ class AdminUpload extends React.Component {
             const reader = new FileReader();
             reader.readAsArrayBuffer(file);
             reader.onerror = err => {
-                alert("error while uploading file: " + err);
+                alert(i18n.t('Upload_error') + ": " + err);
             };
             reader.onload = ({target}) => {
                 Uploader.uploadFileWithMetadata(target.result, data, this.onUploadComplete);
@@ -43,11 +45,19 @@ class AdminUpload extends React.Component {
         const { isUploading, uploadComplete } = this.state;
 
         return (
-            <div>
-                <MetadataForm onClick={this.onClick}/>
-                {isUploading ? <BusySpinner label={"uploading..."}/> :
-                    uploadComplete ? <div>uploaded</div> : <span/>}
-            </div>
+            <I18n>
+                {
+                    (t) => {
+                        return (
+                            <div>
+                                <MetadataForm onClick={this.onClick}/>
+                                {isUploading ? <BusySpinner label={t('Upload_busy')}/> :
+                                    uploadComplete ? <div>{t('Upload_complete')}</div> : <span/>}
+                            </div>
+                        )
+                    }
+                }
+            </I18n>
         );
     }
 }

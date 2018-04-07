@@ -5,6 +5,8 @@
 
 import React from "react";
 import PropTypes from "prop-types";
+import {I18n} from 'react-i18next';
+import i18n from '../i18n';
 
 class Filter extends React.PureComponent {
     constructor(props) {
@@ -16,12 +18,20 @@ class Filter extends React.PureComponent {
     }
     render() {
         return (
-            <select onInput={this.onInput}>
-            <option value={0}>all</option>
-            {
-                this.props.items.map(item => <option key={item} value={item}>{item}</option>)
-            }
-            </select>
+            <I18n>
+                {
+                    (t) => {
+                        return (
+                            <select onInput={this.onInput}>
+                                <option value={0}>{t('FilesList_Filter_all')}</option>
+                                {
+                                    this.props.items.map(item => <option key={item} value={item}>{item}</option>)
+                                }
+                            </select>
+                        )
+                    }
+                }
+            </I18n>
         );
     }
 }

@@ -6,6 +6,8 @@
 import Cookies from "universal-cookie";
 import React from "react";
 import queryString from "query-string";
+import {I18n} from 'react-i18next';
+import i18n from '../i18n';
 
 import AgencyIdConverter from "../model/AgencyIdConverter";
 import {FilesList} from "./FilesList";
@@ -79,7 +81,7 @@ class AdminMode extends React.Component {
         getFileMetadata({"origin": "posthus"}).then(response => {
             const metadataList = mapResponseToMetadataList(response.text);
             this.setState({files: metadataList});
-        }).catch(err => alert("error getting file metadata: " + err));
+        }).catch(err => alert(i18n.t('Fetch_metadata_error') + ": " + err));
     }
     onAgencyFilterInput(agency) {
         this.setState({agency});
@@ -88,17 +90,25 @@ class AdminMode extends React.Component {
         const agencies = Array.from(new Set(this.state.files.map(
             item => item.metadata.agency)));
         return (
-            <div>
-                {this.state.error !== undefined ? (
-                    <ErrorView error={`error showing files list: ${this.state.error}`}/>
-                ) : (<span/>)}
-                <FilesList metadataList={this.state.files}
-                        getBlobUrl={this.getBlobUrl} agency={this.state.agency}>
-                    {this.state.internalUser ? (
-                            <Filter items={agencies} onInput={this.onAgencyFilterInput}/>
-                        ) : (<span/>)}
-                </FilesList>
-            </div>
+            <I18n>
+                {
+                    (t) => {
+                        return (
+                            <div>
+                                {this.state.error !== undefined ? (
+                                    <ErrorView error={`error showing files list: ${this.state.error}`}/>
+                                ) : (<span/>)}
+                                <FilesList metadataList={this.state.files}
+                                           getBlobUrl={this.getBlobUrl} agency={this.state.agency}>
+                                    {this.state.internalUser ? (
+                                        <Filter items={agencies} onInput={this.onAgencyFilterInput}/>
+                                    ) : (<span/>)}
+                                </FilesList>
+                            </div>
+                        )
+                    }
+                }
+            </I18n>
         );
     }
 }

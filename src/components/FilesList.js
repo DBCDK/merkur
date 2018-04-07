@@ -5,6 +5,8 @@
 
 import React from "react";
 import PropTypes from "prop-types";
+import {I18n} from 'react-i18next';
+import i18n from '../i18n';
 
 class File extends React.Component {
     constructor(props) {
@@ -15,7 +17,7 @@ class File extends React.Component {
         this.props.getBlobUrl(this.props.id).then(res =>
             this.setState({url: res})
         ).catch(err =>
-            alert("error while getting file download link: " + err));
+            alert(i18n.t('Fetch_download_link_error') + ": " + err));
     }
     render() {
         return (
@@ -28,7 +30,7 @@ class File extends React.Component {
         );
     }
     static formatCreationTime(millisecondsSinceEpoch) {
-        return new Date(millisecondsSinceEpoch).toLocaleString('da-DK')
+        return new Date(millisecondsSinceEpoch).toLocaleString(i18n.language)
     }
     /*
      * We use the units kilo, mega, giga, etc., in a manner consistent
@@ -58,32 +60,39 @@ File.defaultProps = {
 class FilesList extends React.Component {
     render() {
         return (
-            <div>
-                <h2>files:</h2>
-                {this.props.children}
-                <table className="table">
-                    <thead>
-                        <tr>
-                            <th>name</th>
-                            <th>agency</th>
-                            <th>creation time</th>
-                            <th>Størrelse</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                        this.props.metadataList.filter(item =>
-                            this.props.agency === 0 ||
-                            item.metadata.agency === this.props.agency)
-                            .map(item => <File key={item.id} id={item.id}
-                            creationTime={item.creationTime}
-                            byteSize={item.byteSize}
-                            metadata={item.metadata}
-                            getBlobUrl={this.props.getBlobUrl}/>
-                        )}
-                    </tbody>
-                </table>
-            </div>
+            <I18n>
+                {
+                    (t) => {
+                        return (<div>
+                                <h2>{t('FilesList_heading')}</h2>
+                                {this.props.children}
+                                <table className="table">
+                                    <thead>
+                                    <tr>
+                                        <th>{t('File_name')}</th>
+                                        <th>{t('File_agency')}</th>
+                                        <th>{t('File_creationTime')}</th>
+                                        <th>{t('File_size')}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {
+                                        this.props.metadataList.filter(item =>
+                                            this.props.agency === 0 ||
+                                            item.metadata.agency === this.props.agency)
+                                            .map(item => <File key={item.id} id={item.id}
+                                                               creationTime={item.creationTime}
+                                                               byteSize={item.byteSize}
+                                                               metadata={item.metadata}
+                                                               getBlobUrl={this.props.getBlobUrl}/>
+                                            )}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )
+                    }
+                }
+            </I18n>
         );
     }
 }
