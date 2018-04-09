@@ -13,7 +13,7 @@ i18n
     .init({
         lng: 'da',
         fallbackLng: 'da',
-        debug: true,
+        debug: false,
 
         ns: ['translations'],
         defaultNS: 'translations',
