@@ -38,7 +38,7 @@ class MetadataForm extends React.Component {
                 {
                     (t) => {
                         return (
-                            <form>
+                            <form id="upload-form">
                                 <div className="form-group">
                                     <label htmlFor="name">{t('File_name')}:</label>
                                     <input type="text" name="name"/>
@@ -48,7 +48,7 @@ class MetadataForm extends React.Component {
                                     <input type="text" inputMode="numeric" pattern="\d+" name="agency"/>
                                 </div>
                                 <UploadForm onFilesChosen={this.onFilesChosen}/>
-                                <button type="submit" onClick={this.onClick}>upload</button>
+                                <button type="submit" onClick={this.onClick}>Upload</button>
                             </form>
                         )
                     }

@@ -64,7 +64,7 @@ class FilesList extends React.Component {
                 {
                     (t) => {
                         return (<div>
-                                <h2>{t('FilesList_heading')}</h2>
+                                <h3>{t('FilesList_heading')}</h3>
                                 {this.props.children}
                                 <table className="table">
                                     <thead>

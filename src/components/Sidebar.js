@@ -17,7 +17,6 @@ class Sidebar extends React.PureComponent {
                         return (
                             <div className="wrapper">
                                 <nav id="sidebar">
-                                    <h1>{t('App_name')}</h1>
                                     <ul>
                                         <li><Link to="/">{t('Sidebar_list')}</Link></li>
                                         <li><Link to="/upload">{t('Sidebar_upload')}</Link></li>
