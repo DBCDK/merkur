@@ -5,7 +5,6 @@
 
 import React from "react";
 import PropTypes from "prop-types";
-import {I18n} from 'react-i18next';
 import i18n from '../i18n';
 
 class File extends React.Component {
@@ -59,40 +58,32 @@ File.defaultProps = {
 
 class FilesList extends React.Component {
     render() {
-        return (
-            <I18n>
-                {
-                    (t) => {
-                        return (<div>
-                                <h3>{t('FilesList_heading')}</h3>
-                                {this.props.children}
-                                <table className="table">
-                                    <thead>
-                                    <tr>
-                                        <th>{t('File_name')}</th>
-                                        <th>{t('File_agency')}</th>
-                                        <th>{t('File_creationTime')}</th>
-                                        <th>{t('File_size')}</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {
-                                        this.props.metadataList.filter(item =>
-                                            this.props.agency === 0 ||
-                                            item.metadata.agency === this.props.agency)
-                                            .map(item => <File key={item.id} id={item.id}
-                                                               creationTime={item.creationTime}
-                                                               byteSize={item.byteSize}
-                                                               metadata={item.metadata}
-                                                               getBlobUrl={this.props.getBlobUrl}/>
-                                            )}
-                                    </tbody>
-                                </table>
-                            </div>
-                        )
-                    }
-                }
-            </I18n>
+        return (<div>
+                <h3>{i18n.t('FilesList_heading')}</h3>
+                {this.props.children}
+                <table className="table">
+                    <thead>
+                    <tr>
+                        <th>{i18n.t('File_name')}</th>
+                        <th>{i18n.t('File_agency')}</th>
+                        <th>{i18n.t('File_creationTime')}</th>
+                        <th>{i18n.t('File_size')}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {
+                        this.props.metadataList.filter(item =>
+                            this.props.agency === 0 ||
+                            item.metadata.agency === this.props.agency)
+                            .map(item => <File key={item.id} id={item.id}
+                                               creationTime={item.creationTime}
+                                               byteSize={item.byteSize}
+                                               metadata={item.metadata}
+                                               getBlobUrl={this.props.getBlobUrl}/>
+                            )}
+                    </tbody>
+                </table>
+            </div>
         );
     }
 }

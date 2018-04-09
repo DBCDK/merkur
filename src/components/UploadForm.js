@@ -5,7 +5,6 @@
 
 import React from "react";
 import PropTypes from "prop-types";
-import {I18n} from 'react-i18next';
 import i18n from '../i18n';
 
 class UploadForm extends React.Component {
@@ -15,18 +14,10 @@ class UploadForm extends React.Component {
     }
     render() {
         return (
-            <I18n>
-                {
-                    (t) => {
-                        return (
-                            <div className="form-group">
-                                <label htmlFor="file-upload">{t('UploadForm_choose_file')}</label>
-                                <input type="file" name="file-upload" onChange={this.onFilesChosen}/>
-                            </div>
-                        )
-                    }
-                }
-            </I18n>
+            <div className="form-group">
+                <label htmlFor="file-upload">{i18n.t('UploadForm_choose_file')}</label>
+                <input type="file" name="file-upload" onChange={this.onFilesChosen}/>
+            </div>
         );
     }
 }

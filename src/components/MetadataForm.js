@@ -8,7 +8,6 @@ import PropTypes from "prop-types";
 
 import FileMetadata from "../model/FileMetadata";
 import UploadForm from "./UploadForm";
-import {I18n} from 'react-i18next';
 import i18n from '../i18n';
 
 class MetadataForm extends React.Component {
@@ -34,26 +33,18 @@ class MetadataForm extends React.Component {
     }
     render() {
         return (
-            <I18n>
-                {
-                    (t) => {
-                        return (
-                            <form id="upload-form">
-                                <div className="form-group">
-                                    <label htmlFor="name">{t('File_name')}:</label>
-                                    <input type="text" name="name"/>
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="agency">{t('File_agency')}:</label>
-                                    <input type="text" inputMode="numeric" pattern="\d+" name="agency"/>
-                                </div>
-                                <UploadForm onFilesChosen={this.onFilesChosen}/>
-                                <button type="submit" onClick={this.onClick}>Upload</button>
-                            </form>
-                        )
-                    }
-                }
-            </I18n>
+            <form id="upload-form">
+                <div className="form-group">
+                    <label htmlFor="name">{i18n.t('File_name')}:</label>
+                    <input type="text" name="name"/>
+                </div>
+                <div className="form-group">
+                    <label htmlFor="agency">{i18n.t('File_agency')}:</label>
+                    <input type="text" inputMode="numeric" pattern="\d+" name="agency"/>
+                </div>
+                <UploadForm onFilesChosen={this.onFilesChosen}/>
+                <button type="submit" onClick={this.onClick}>Upload</button>
+            </form>
         );
     }
 }
