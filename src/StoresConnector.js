@@ -15,6 +15,7 @@ const FILES_COLLECTION = "files";
 class StoresConnector {
     static authorizeHash(hash) {
         return new HttpClient()
+            .addHeaders({"Content-type": "application/x-www-form-urlencoded"})
             .post(NETPUNKT_AUTHENTICATION_URL, null, null, `hash=${hash}`);
     }
     static addFile(data) {
