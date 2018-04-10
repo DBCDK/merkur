@@ -8,7 +8,6 @@ import React from "react";
 import MetadataForm from "./MetadataForm";
 import BusySpinner from './BusySpinner';
 import Uploader from "../model/Uploader";
-import {I18n} from 'react-i18next';
 import i18n from '../i18n';
 
 class AdminUpload extends React.Component {
@@ -43,21 +42,12 @@ class AdminUpload extends React.Component {
 
     render() {
         const { isUploading, uploadComplete } = this.state;
-
         return (
-            <I18n>
-                {
-                    (t) => {
-                        return (
-                            <div>
-                                <MetadataForm onClick={this.onClick}/>
-                                {isUploading ? <BusySpinner label={t('Upload_busy')}/> :
-                                    uploadComplete ? <div>{t('Upload_complete')}</div> : <span/>}
-                            </div>
-                        )
-                    }
-                }
-            </I18n>
+            <div>
+                <MetadataForm onClick={this.onClick}/>
+                {isUploading ? <BusySpinner label={i18n.t('Upload_busy')}/> :
+                    uploadComplete ? <div>{i18n.t('Upload_complete')}</div> : <span/>}
+            </div>
         );
     }
 }

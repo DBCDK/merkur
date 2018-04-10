@@ -6,7 +6,6 @@
 import Cookies from "universal-cookie";
 import React from "react";
 import queryString from "query-string";
-import {I18n} from 'react-i18next';
 import i18n from '../i18n';
 
 import AgencyIdConverter from "../model/AgencyIdConverter";
@@ -90,25 +89,17 @@ class AdminMode extends React.Component {
         const agencies = Array.from(new Set(this.state.files.map(
             item => item.metadata.agency)));
         return (
-            <I18n>
-                {
-                    (t) => {
-                        return (
-                            <div>
-                                {this.state.error !== undefined ? (
-                                    <ErrorView error={`error showing files list: ${this.state.error}`}/>
-                                ) : (<span/>)}
-                                <FilesList metadataList={this.state.files}
-                                           getBlobUrl={this.getBlobUrl} agency={this.state.agency}>
-                                    {this.state.internalUser ? (
-                                        <Filter items={agencies} onInput={this.onAgencyFilterInput}/>
-                                    ) : (<span/>)}
-                                </FilesList>
-                            </div>
-                        )
-                    }
-                }
-            </I18n>
+            <div>
+                {this.state.error !== undefined ? (
+                    <ErrorView error={`error showing files list: ${this.state.error}`}/>
+                ) : (<span/>)}
+                <FilesList metadataList={this.state.files}
+                           getBlobUrl={this.getBlobUrl} agency={this.state.agency}>
+                    {this.state.internalUser ? (
+                        <Filter items={agencies} onInput={this.onAgencyFilterInput}/>
+                    ) : (<span/>)}
+                </FilesList>
+            </div>
         );
     }
 }
