@@ -138,7 +138,15 @@ app.post(constants.filesSearchEndpoint, (req, res) => {
 
 app.post(constants.authorizeHash, (req, res) => {
     StoresConnector.authorizeHash(req.body.hash).end()
-        .then(({text}) => res.status(200).send(text))
+        .then(target => {
+            if(target.header !== undefined && target.header !== null) {
+                if(target.header.agency === undefined) {
+                    res.status(500).send(
+                        "missing agency header in netpunkt response");
+                }
+                res.status(200).send(target.header.agency);
+            }
+        })
         .catch(err => res.status(500).send(err));
 });
 

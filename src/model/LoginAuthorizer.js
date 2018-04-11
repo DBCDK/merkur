@@ -11,16 +11,7 @@ class LoginAuthorizer {
         const client = new HttpClient();
         return new Promise((resolve, reject) => {
             client.post(constants.authorizeHash, null, null, {hash}).end()
-                .then(({text}) => {
-                    const json = JSON.parse(text);
-                    if(json.hasOwnProperty("agency")) {
-                        resolve(json.agency);
-                    } else if(json.hasOwnProperty("error")) {
-                        reject(json.error);
-                    } else {
-                        reject("unknown error");
-                    }
-                })
+                .then(({text}) => resolve(text))
                 .catch(err => reject(err));
         });
     }
