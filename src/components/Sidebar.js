@@ -7,6 +7,7 @@ import React from "react";
 import {Link} from "react-router-dom";
 import {I18n} from 'react-i18next';
 import i18n from '../i18n';
+import {UserContext} from './UserContext';
 
 class Sidebar extends React.PureComponent {
     render() {
@@ -15,14 +16,21 @@ class Sidebar extends React.PureComponent {
                 {
                     (t) => {
                         return (
-                            <div className="wrapper">
-                                <nav id="sidebar">
-                                    <ul>
-                                        <li><Link to="/">{t('Sidebar_list')}</Link></li>
-                                        <li><Link to="/upload">{t('Sidebar_upload')}</Link></li>
-                                    </ul>
-                                </nav>
-                            </div>
+                            <UserContext.Consumer>
+                                {user => (
+                                    <div className="wrapper">
+                                        <nav id="sidebar">
+                                            {user.internalUser
+                                                ? (
+                                                    <ul>
+                                                        <li><Link to="/">{t('Sidebar_list')}</Link></li>
+                                                        <li><Link to="/upload">{t('Sidebar_upload')}</Link></li>
+                                                    </ul>)
+                                                : (<span/>)}
+                                        </nav>
+                                    </div>
+                                )}
+                            </UserContext.Consumer>
                         )
                     }
                 }
