@@ -12,6 +12,7 @@ import path from "path";
 import constants from "./constants";
 import FileMetadata from "./model/FileMetadata";
 import StoresConnector from "./StoresConnector";
+import FilesController from "./controllers/FilesController";
 
 const app = new Express();
 const server = new Server(app);
@@ -20,6 +21,9 @@ app.use(Express.static(path.join(__dirname, "static")));
 app.use(BodyParser.json({
     type: "application/json"
 }));
+
+app.route(constants.filesUnclaimedEndpoint)
+    .get(FilesController.getUnclaimedFiles);
 
 app.post(constants.filesAddMetadataEndpoint, (req, res) => {
     return handleMetadata(req.body.url, req.body.metadata, res);
