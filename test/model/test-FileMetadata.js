@@ -16,6 +16,7 @@ describe("FileMetadata", () => {
         expect(metadata.name).to.equal("name");
         expect(metadata.agency).to.equal(123123);
         expect(metadata.origin).to.equal("origin");
+        expect(metadata.claimed).to.equal(false);
     });
 
     it("toJson", () => {
