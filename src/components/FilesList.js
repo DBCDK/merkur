@@ -11,7 +11,6 @@ import i18n from '../i18n';
 class File extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {url: "not-found"};
         this.onClick = this.onClick.bind(this);
     }
     onClick({target}) {
