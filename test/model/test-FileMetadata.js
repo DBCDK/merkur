@@ -22,29 +22,39 @@ describe("FileMetadata", () => {
         const metadata = new FileMetadata("name", 123123, "origin");
         const json = metadata.toJson();
         expect(json).to.equal("{\"name\":\"name\",\"agency\":123123," +
-            "\"origin\":\"origin\"}");
+            "\"origin\":\"origin\",\"claimed\":false}");
     });
     it("verify", () => {
         let metadata = JSON.parse('{"name": "spongebob", "agency": 123123, ' +
-            '"origin": "bikini bottom"}');
+            '"origin": "bikini bottom", "claimed": false}');
         expect(FileMetadata.verify(metadata)).to.equal(true);
 
         metadata = JSON.parse('{"name": "spongebob", "origin": ' +
-            '"bikini bottom"}');
+            '"bikini bottom", "claimed": false}');
         expect(FileMetadata.verify(metadata)).to.equal(false);
 
-        metadata = JSON.parse('{"name": "spongebob", "agency": 123123}');
+        metadata = JSON.parse('{"name": "spongebob", "agency": 123123, ' +
+            '"claimed": false}');
         expect(FileMetadata.verify(metadata)).to.equal(false);
 
-        metadata = JSON.parse('{"agency": 123123, "origin": "bikini bottom"}');
+        metadata = JSON.parse('{"agency": 123123, "origin": "bikini bottom", ' +
+            '"claimed": false}');
         expect(FileMetadata.verify(metadata)).to.equal(false);
 
         metadata = JSON.parse('{"name": "spongebob", "agency": ' +
-            '"123123", "origin": "bikini bottom"}');
+            '"123123", "origin": "bikini bottom", "claimed": false}');
         expect(FileMetadata.verify(metadata)).to.equal(false);
 
         metadata = JSON.parse('{"name": "spongebob", "agency": ' +
-            '9007199254740992, "origin": "bikini bottom"}');
+            '9007199254740992, "origin": "bikini bottom", "claimed": false}');
+        expect(FileMetadata.verify(metadata)).to.equal(false);
+
+        metadata = JSON.parse('{"name": "spongebob", "agency": 123123, ' +
+            '"origin": "bikini bottom"}');
+        expect(FileMetadata.verify(metadata)).to.equal(false);
+
+        metadata = JSON.parse('{"name": "spongebob", "agency": 123123, ' +
+            '"origin": "bikini bottom", "claimed": "no"}');
         expect(FileMetadata.verify(metadata)).to.equal(false);
     });
 });
