@@ -22,6 +22,9 @@ app.use(BodyParser.json({
     type: "application/json"
 }));
 
+app.route(constants.filesEndpoint)
+    .get(FilesController.getFiles);
+
 app.route(constants.filesUnclaimedEndpoint)
     .get(FilesController.getUnclaimedFiles);
 

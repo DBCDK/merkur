@@ -81,6 +81,18 @@ const mapToFileUrl = (request, fileAttributes, path) => {
     });
 };
 
+exports.getFiles = function(req, res) {
+    const agency = authenticate(req, res);
+    if (agency !== undefined) {
+        StoresConnector.searchFiles({
+            "origin": "posthus",
+            "agency": parseInt(agency, 10)
+        }).end().then(response =>
+            res.status(200).send(mapToFileObjectList(req, response))
+        ).catch(err => res.status(500).send(err));
+    }
+};
+
 exports.getUnclaimedFiles = function(req, res) {
     const agency = authenticate(req, res);
     if (agency !== undefined) {
