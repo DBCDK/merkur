@@ -12,7 +12,7 @@ import path from "path";
 import constants from "./constants";
 import FileMetadata from "./model/FileMetadata";
 import StoresConnector from "./StoresConnector";
-import FilesController from "./controllers/FilesController";
+import * as FilesController from "./controllers/FilesController";
 
 const app = new Express();
 const server = new Server(app);

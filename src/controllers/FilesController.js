@@ -76,7 +76,7 @@ const mapToFileUrl = (request, fileAttributes, path) => {
     });
 };
 
-exports.getFiles = function(req, res) {
+const getFiles = (req, res) => {
     const agency = authenticate(req, res);
     if (agency !== undefined) {
         StoresConnector.searchFiles({
@@ -88,7 +88,7 @@ exports.getFiles = function(req, res) {
     }
 };
 
-exports.getUnclaimedFiles = function(req, res) {
+const getUnclaimedFiles = (req, res) => {
     const agency = authenticate(req, res);
     if (agency !== undefined) {
         StoresConnector.searchFiles({
@@ -100,3 +100,5 @@ exports.getUnclaimedFiles = function(req, res) {
         ).catch(err => res.status(500).send(err));
     }
 };
+
+export {getFiles, getUnclaimedFiles}
