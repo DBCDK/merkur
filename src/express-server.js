@@ -22,11 +22,8 @@ app.use(BodyParser.json({
     type: "application/json"
 }));
 
-app.route(constants.filesEndpoint)
-    .get(FilesController.getFiles);
-
-app.route(constants.filesUnclaimedEndpoint)
-    .get(FilesController.getUnclaimedFiles);
+app.get(constants.filesEndpoint, FilesController.getFiles);
+app.get(constants.filesUnclaimedEndpoint, FilesController.getUnclaimedFiles);
 
 app.post(constants.filesAddMetadataEndpoint, (req, res) => {
     return handleMetadata(req.body.url, req.body.metadata, res);
