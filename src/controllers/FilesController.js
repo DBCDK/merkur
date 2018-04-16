@@ -80,7 +80,6 @@ const getFiles = (req, res) => {
     const agency = authenticate(req, res);
     if (agency !== undefined) {
         StoresConnector.searchFiles({
-            "origin": "posthus",
             "agency": parseInt(agency, 10)
         }).end().then(response =>
             res.status(200).send(mapToFileObjectList(req, response))
@@ -92,7 +91,6 @@ const getUnclaimedFiles = (req, res) => {
     const agency = authenticate(req, res);
     if (agency !== undefined) {
         StoresConnector.searchFiles({
-            "origin": "posthus",
             "agency": parseInt(agency, 10),
             "claimed": false
         }).end().then(response =>
