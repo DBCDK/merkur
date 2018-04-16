@@ -54,7 +54,7 @@ class App extends React.Component {
                     RedirectUrlHandler.getRedirectUrl()
                         // use window.open instead of Redirect from
                         // react-router-dom because we need to go to another domain
-                        .then(res => window.open(res.text))
+                        .then(res => window.location = res.text)
                         .catch(redirectError => {
                             console.error("error getting redirect url",
                                 redirectError);
