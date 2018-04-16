@@ -52,12 +52,7 @@ const mapToUtc = (millisecondsSinceEpoch) => {
 
 const mapToFileObjectList = (request, response) => {
     const jsonArray = JSON.parse(response.text);
-    const list = [];
-    for (let i = 0; i < jsonArray.length; i++) {
-        const fileAttributes = jsonArray[i];
-        list.push(mapToFileObject(request, fileAttributes));
-    }
-    return list;
+    return jsonArray.map(item => mapToFileObject(request, item))
 };
 
 const mapToFileObject = (request, fileAttributes) => {
