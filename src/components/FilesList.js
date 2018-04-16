@@ -4,24 +4,29 @@
  */
 
 import React from "react";
+import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import i18n from '../i18n';
 
 class File extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {url: "not-found"};
+        this.onClick = this.onClick.bind(this);
     }
-    componentWillMount() {
-        this.props.getBlobUrl(this.props.id).then(res =>
-            this.setState({url: res})
-        ).catch(err =>
-            alert(i18n.t('Fetch_download_link_error') + ": " + err));
+    onClick({target}) {
+        this.props.getBlobUrl(this.props.id).then(res => {
+            const a = document.createElement("a");
+            a.href = res;
+            a.setAttribute("download", this.props.metadata.name);
+            ReactDOM.findDOMNode(this).appendChild(a);
+            a.click();
+        }).catch(err =>
+            alert(i18n.t('fetch_download_link_error') + ": " + err));
     }
     render() {
         return (
             <tr>
-                <td><a href={this.state.url} download={this.props.metadata.name}>{this.props.metadata.name}</a></td>
+                <td><a href="#" download={this.props.metadata.name} onClick={this.onClick}>{this.props.metadata.name}</a></td>
                 <td>{this.props.metadata.agency}</td>
                 <td>{File.formatCreationTime(this.props.creationTime)}</td>
                 <td>{File.byteSizeToHumanReadableSI(this.props.byteSize)}</td>
