@@ -24,6 +24,9 @@ app.use(BodyParser.json({
 
 app.get(constants.filesEndpoint, FilesController.getFiles);
 app.get(constants.filesUnclaimedEndpoint, FilesController.getUnclaimedFiles);
+app.post(constants.fileClaimedEndpoint, FilesController.postFileClaimed);
+
+// ToDo: move file realated methods into FilesController
 
 app.post(constants.filesAddMetadataEndpoint, (req, res) => {
     return handleMetadata(req.body.url, req.body.metadata, res);

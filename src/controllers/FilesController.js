@@ -6,6 +6,7 @@
 import url from "url";
 import constants from "../constants";
 import StoresConnector from "../StoresConnector";
+import AgencyIdConverter from "../model/AgencyIdConverter";
 
 const authenticate = (request, response) => {
     // Todo: promote to middleware function
@@ -99,4 +100,23 @@ const getUnclaimedFiles = (req, res) => {
     }
 };
 
-export {getFiles, getUnclaimedFiles}
+const postFileClaimed = (req, res) => {
+    const agency = authenticate(req, res);
+    if (agency !== undefined) {
+        const id = req.url.split('/')[2];
+        StoresConnector.getFileAttributes(id).end().then(response => {
+            const fileAttributes = response.body;
+            console.log(fileAttributes);
+            if (AgencyIdConverter.agencyIdToString(fileAttributes.metadata.agency) !== agency) {
+                res.status(403).send("Attempt to claim file owned by another agency");
+            } else {
+                fileAttributes.metadata.claimed = true;
+                StoresConnector.addMetadata(id, fileAttributes.metadata).end()
+                    .then(res.status(200).send())
+                    .catch(err => res.status(500).send(err));
+            }
+        }).catch(err => res.status(500).send(err));
+    }
+};
+
+export {getFiles, getUnclaimedFiles, postFileClaimed}
