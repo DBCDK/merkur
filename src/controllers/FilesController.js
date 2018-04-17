@@ -106,7 +106,6 @@ const postFileClaimed = (req, res) => {
         const id = req.url.split('/')[2];
         StoresConnector.getFileAttributes(id).end().then(response => {
             const fileAttributes = response.body;
-            console.log(fileAttributes);
             if (AgencyIdConverter.agencyIdToString(fileAttributes.metadata.agency) !== agency) {
                 res.status(403).send("Attempt to claim file owned by another agency");
             } else {
