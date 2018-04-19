@@ -5,6 +5,9 @@
 
 const constants = {
     authorizeHash: "/hash/authorize",
+    filesEndpoint: "/files",
+    filesUnclaimedEndpoint: "/files/unclaimed",
+    fileClaimedEndpoint: "/files/:id/claimed",
     fileEndpoint: "/files/:id",
     filesAddEndpoint: "/files/add",
     filesAddMetadataEndpoint: "/files/metadata",

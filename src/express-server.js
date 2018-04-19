@@ -12,6 +12,7 @@ import path from "path";
 import constants from "./constants";
 import FileMetadata from "./model/FileMetadata";
 import StoresConnector from "./StoresConnector";
+import * as FilesController from "./controllers/FilesController";
 
 const app = new Express();
 const server = new Server(app);
@@ -20,6 +21,12 @@ app.use(Express.static(path.join(__dirname, "static")));
 app.use(BodyParser.json({
     type: "application/json"
 }));
+
+app.get(constants.filesEndpoint, FilesController.getFiles);
+app.get(constants.filesUnclaimedEndpoint, FilesController.getUnclaimedFiles);
+app.post(constants.fileClaimedEndpoint, FilesController.postFileClaimed);
+
+// ToDo: move file realated methods into FilesController
 
 app.post(constants.filesAddMetadataEndpoint, (req, res) => {
     return handleMetadata(req.body.url, req.body.metadata, res);

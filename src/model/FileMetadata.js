@@ -4,21 +4,23 @@
  */
 
 class FileMetadata {
-    constructor(name, agency, origin) {
+    constructor(name, agency, origin, claimed = false) {
         this.name = name;
         this.agency = agency;
         this.origin = origin;
+        this.claimed = claimed;
     }
     toJson() {
         return JSON.stringify(this);
     }
     static verify(metadata) {
-        const requiredFields = ["name", "agency", "origin"];
+        const requiredFields = ["name", "agency", "origin", "claimed"];
         if(!requiredFields.every(field => metadata[field] !== undefined &&
                 metadata[field] !== null)) {
             return false;
         }
         if(!Number.isSafeInteger(metadata.agency)) return false;
+        if (typeof(metadata.claimed) !== typeof(true)) return false;
         return true;
     }
 }
