@@ -10,13 +10,14 @@ const NETPUNKT_AUTHENTICATION_URL = process.env.NETPUNKT_AUTHENTICATION_URL
     || "netpunkt-authentication-url-not-set";
 const NETPUNKT_REDIRECT_URL = process.env.NETPUNKT_REDIRECT_URL
     || "netpunkt-redirect-url-not-set";
+const SESSION_SECRET = process.env.SESSION_SECRET
+    || "";  // Empty default produces a warning in the server log
 
-// ToDo: get secret from environment variable
 // ToDo: replace default memory store not suitable for production environments
 
 const auth_session = {
     name: 'netpunkt-auth',
-    secret: 'merkur-secret',
+    secret: SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
