@@ -6,10 +6,9 @@
 import BodyParser from "body-parser";
 import Busboy from "busboy";
 import Express from "express";
+import session from "express-session";
 import {Server} from "http";
 import path from "path";
-import cookieParser from 'cookie-parser';
-
 
 import constants from "./constants";
 import FileMetadata from "./model/FileMetadata";
@@ -20,7 +19,7 @@ import * as FilesController from "./controllers/FilesController";
 const app = new Express();
 const server = new Server(app);
 
-app.use(cookieParser());
+app.use(session(AuthController.auth_session));
 
 app.use(Express.static(path.join(__dirname, "static")));
 // necessary for parsing POST request bodies

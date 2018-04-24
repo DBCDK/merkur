@@ -10,7 +10,20 @@ const NETPUNKT_AUTHENTICATION_URL = process.env.NETPUNKT_AUTHENTICATION_URL
     || "netpunkt-authentication-url-not-set";
 const NETPUNKT_REDIRECT_URL = process.env.NETPUNKT_REDIRECT_URL
     || "netpunkt-redirect-url-not-set";
-const AUTH_COOKIE = "netpunkt-auth";
+
+// ToDo: get secret from environment variable
+// ToDo: replace default memory store not suitable for production environments
+
+const auth_session = {
+    name: 'netpunkt-auth',
+    secret: 'merkur-secret',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        maxAge: 86400000,
+        httpOnly: true
+    }
+};
 
 const verifyHash = (hash) => {
     return new Promise((resolve, reject) => {
@@ -31,18 +44,18 @@ const verifyHash = (hash) => {
 };
 
 const login = (req, res) => {
-    if (req.cookies && req.cookies[AUTH_COOKIE]) {
-        console.log("Reading agency ID from cookie");
+    if (req.session.agencyid) {
+        console.log("Reading agency ID from session");
         const agencyid = AgencyIdConverter.agencyIdFromString(
-                req.cookies[AUTH_COOKIE]);
-        console.log("Agency ID from cookie: " + agencyid);
+                req.session.agencyid);
+        console.log("Agency ID from session: " + agencyid);
         res.status(200).send(String(agencyid));
     } else {
         const hash = req.query.hash;
         verifyHash(hash).then(response => {
             console.log("Verifying hash: " + hash);
             const agencyid = AgencyIdConverter.agencyIdFromString(response);
-            res.cookie(AUTH_COOKIE, agencyid, { maxAge: 86400000, httpOnly: true });
+            req.session.agencyid = agencyid;
             console.log("Agency ID from netpunkt: " + agencyid);
             res.status(200).send(String(agencyid));
         }).catch(err => {
@@ -56,4 +69,4 @@ const login = (req, res) => {
     }
 };
 
-export {login}
+export {auth_session, login}
