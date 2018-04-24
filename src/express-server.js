@@ -8,19 +8,27 @@ import Busboy from "busboy";
 import Express from "express";
 import {Server} from "http";
 import path from "path";
+import cookieParser from 'cookie-parser';
+
 
 import constants from "./constants";
 import FileMetadata from "./model/FileMetadata";
 import StoresConnector from "./StoresConnector";
+import * as AuthController from "./controllers/AuthController";
 import * as FilesController from "./controllers/FilesController";
 
 const app = new Express();
 const server = new Server(app);
+
+app.use(cookieParser());
+
 app.use(Express.static(path.join(__dirname, "static")));
 // necessary for parsing POST request bodies
 app.use(BodyParser.json({
     type: "application/json"
 }));
+
+app.get(constants.loginEndpoint, AuthController.login);
 
 app.get(constants.filesEndpoint, FilesController.getFiles);
 app.get(constants.filesUnclaimedEndpoint, FilesController.getUnclaimedFiles);
@@ -141,35 +149,6 @@ app.post(constants.filesSearchEndpoint, (req, res) => {
     StoresConnector.searchFiles(req.body).end().then(json =>
         res.status(200).send(json.text)
     ).catch(err => res.status(500).send(err));
-});
-
-app.post(constants.authorizeHash, (req, res) => {
-    StoresConnector.authorizeHash(req.body.hash).end()
-        .then(target => {
-            if(target.header !== undefined && target.header !== null) {
-                if(target.header.agency === undefined) {
-                    res.status(500).send(
-                        "missing agency header in netpunkt response");
-                }
-                res.status(200).send(target.header.agency);
-            }
-        })
-        .catch(err => res.status(500).send(err));
-});
-
-app.get(constants.getRedirectUrl, (req, res) => {
-    /** send the redirect url via an endpoint because we don't want to
-     * build it into the client side code with webpack.EnvironmentPlugin
-     * since this would require us to have different builds for our
-     * different environments instead of one build configurable by
-     * environment variables
-     */
-    const redirectUrl = process.env.NETPUNKT_REDIRECT_URL;
-    if(redirectUrl !== undefined && redirectUrl !== null) {
-        res.status(200).send(redirectUrl);
-    } else {
-        res.status(500).send("netpunkt redirect url is not set");
-    }
 });
 
 // handle the rest of the routing in the client

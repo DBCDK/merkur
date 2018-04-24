@@ -7,11 +7,9 @@ import React from "react";
 import {I18n} from 'react-i18next';
 import i18n from '../i18n';
 import {UserContext} from './UserContext';
-import Cookies from "universal-cookie";
 import queryString from "query-string";
-import AgencyIdConverter from "../model/AgencyIdConverter";
-import LoginAuthorizer from "../model/LoginAuthorizer";
-import RedirectUrlHandler from "../model/RedirectUrlHandler";
+import constants from "../constants";
+import {HttpClient} from "../HttpClient";
 
 import Main from "./Main";
 import Sidebar from "./Sidebar";
@@ -34,34 +32,24 @@ class App extends React.Component {
             }
         }
     }
+
+    login() {
+        const client = new HttpClient();
+        client.get(constants.loginEndpoint, null,
+            {hash: queryString.parseUrl(window.location.href).query.hash})
+            .end()
+            .then(response => {
+                this.setState(getUserState(Number.parseInt(response.text)));
+            })
+            .catch(err => {
+                // manipulate window.location instead of redirect
+                // to avoid CORS error
+                window.location = err.response.text;
+            });
+    }
+
     componentWillMount() {
-        const cookies = new Cookies();
-        if(cookies.get("netpunkt-auth")) {
-            const agencyid = AgencyIdConverter.agencyIdFromString(
-                cookies.get("netpunkt-auth"));
-            this.setState(getUserState(agencyid));
-        } else {
-            const qs = queryString.parseUrl(window.location.href).query;
-            LoginAuthorizer.authorizeHash(qs.hash).then(res => {
-                    const agencyid = AgencyIdConverter.agencyIdFromString(res);
-                    this.setState(getUserState(agencyid));
-                    // should also have {secure: true}
-                    // 86400: 24H in seconds
-                    cookies.set("netpunkt-auth", agencyid, {maxAge: 86400});
-                })
-                .catch(error => {
-                    console.error("error getting agency id", error);
-                    RedirectUrlHandler.getRedirectUrl()
-                        // use window.open instead of Redirect from
-                        // react-router-dom because we need to go to another domain
-                        .then(res => window.location = res.text)
-                        .catch(redirectError => {
-                            console.error("error getting redirect url",
-                                redirectError);
-                            this.setState({error});
-                        });
-                });
-        }
+        this.login();
     }
 
     render() {
