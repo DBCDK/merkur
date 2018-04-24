@@ -15,11 +15,17 @@ import FileMetadata from "./model/FileMetadata";
 import StoresConnector from "./StoresConnector";
 import * as AuthController from "./controllers/AuthController";
 import * as FilesController from "./controllers/FilesController";
+import SessionMemoryStore from "session-memory-store"
 
 const app = new Express();
 const server = new Server(app);
 
-app.use(session(AuthController.auth_session));
+const MemoryStore = SessionMemoryStore(session);
+const auth_session = AuthController.auth_session;
+auth_session.store = new MemoryStore({
+    expires: 86400, // seconds
+});
+app.use(session(auth_session));
 
 app.use(Express.static(path.join(__dirname, "static")));
 // necessary for parsing POST request bodies

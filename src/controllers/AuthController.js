@@ -13,8 +13,6 @@ const NETPUNKT_REDIRECT_URL = process.env.NETPUNKT_REDIRECT_URL
 const SESSION_SECRET = process.env.SESSION_SECRET
     || "";  // Empty default produces a warning in the server log
 
-// ToDo: replace default memory store not suitable for production environments
-
 const auth_session = {
     name: 'netpunkt-auth',
     secret: SESSION_SECRET,
