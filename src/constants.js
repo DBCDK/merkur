@@ -4,7 +4,7 @@
  */
 
 const constants = {
-    authorizeHash: "/hash/authorize",
+    loginEndpoint: "/login",
     filesEndpoint: "/files",
     filesUnclaimedEndpoint: "/files/unclaimed",
     fileClaimedEndpoint: "/files/:id/claimed",
@@ -12,7 +12,6 @@ const constants = {
     filesAddEndpoint: "/files/add",
     filesAddMetadataEndpoint: "/files/metadata",
     filesSearchEndpoint: "/files/search",
-    getRedirectUrl: "/netpunkt-redirect/url",
     defaultOrigin: "posthus"
 };
 Object.freeze(constants);
