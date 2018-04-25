@@ -7,45 +7,7 @@ import url from "url";
 import constants from "../constants";
 import StoresConnector from "../StoresConnector";
 import AgencyIdConverter from "../model/AgencyIdConverter";
-
-const authenticate = (request, response) => {
-    // Todo: promote to middleware function
-    // Todo: accept netpunkt-auth cookie as well
-
-    if (!request.headers.authorization) {
-        response.setHeader('WWW-Authenticate', 'Basic realm="DBC merkur"');
-        response.status(401).send("Missing Authorization header");
-        return undefined;
-    }
-
-    let parts = request.headers.authorization.split(' ');
-    if (parts.length !== 2) {
-        response.setHeader('WWW-Authenticate', 'Basic realm="DBC merkur"');
-        response.status(401).send("Authorization header must include both type and credentials");
-        return undefined;
-    }
-
-    // verify type
-    if (parts[0].toLowerCase() !== 'basic') {
-        response.setHeader('WWW-Authenticate', 'Basic realm="DBC merkur"');
-        response.status(401).send("Authorization type must be Basic");
-        return undefined;
-    }
-    
-    const encodedCredentials = parts[1];
-    const decodedCredentials = new Buffer(encodedCredentials, 'base64').toString('utf8');
-
-    parts = decodedCredentials.split(':');
-    if (parts.length !== 2) {
-        response.setHeader('WWW-Authenticate', 'Basic realm="DBC merkur"');
-        response.status(401).send("Apikey must include both user and secret");
-        return undefined;
-    }
-
-    // ToDo: verify secret parts[1]
-
-    return parts[0];
-};
+import * as AuthController from "./AuthController";
 
 const mapToUtc = (millisecondsSinceEpoch) => {
         return new Date(millisecondsSinceEpoch).toISOString();
@@ -78,7 +40,7 @@ const mapToFileUrl = (request, fileAttributes, path) => {
 };
 
 const getFiles = (req, res) => {
-    const agency = authenticate(req, res);
+    const agency = AuthController.authenticate(req, res);
     if (agency !== undefined) {
         StoresConnector.searchFiles({
             "agency": parseInt(agency, 10)
@@ -89,7 +51,7 @@ const getFiles = (req, res) => {
 };
 
 const getUnclaimedFiles = (req, res) => {
-    const agency = authenticate(req, res);
+    const agency = AuthController.authenticate(req, res);
     if (agency !== undefined) {
         StoresConnector.searchFiles({
             "agency": parseInt(agency, 10),
@@ -101,7 +63,7 @@ const getUnclaimedFiles = (req, res) => {
 };
 
 const postFileClaimed = (req, res) => {
-    const agency = authenticate(req, res);
+    const agency = AuthController.authenticate(req, res);
     if (agency !== undefined) {
         const id = req.url.split('/')[2];
         StoresConnector.getFileAttributes(id).end().then(response => {
