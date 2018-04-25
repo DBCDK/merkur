@@ -97,7 +97,8 @@ const searchFiles = (req, res) => {
         res.status(511).send();
     } else {
         const searchParam = req.body;
-        if (req.session.agencyid === constants.adminAgency) {
+        if (AgencyIdConverter.agencyIdToString(req.session.agencyid) ===
+            constants.adminAgency) {
             // admin agency sees all files
             searchParam.origin = constants.defaultOrigin;
         } else {
