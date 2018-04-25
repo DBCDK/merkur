@@ -38,10 +38,21 @@ class AdminMode extends React.Component {
         });
     }
     componentWillMount() {
-        getFileMetadata({"origin": "posthus"}).then(response => {
+        this.fetchFiles();
+    }
+    fetchFiles() {
+        // poll for active client session while server-side returns
+        // 511 Network Authentication Required
+        getFileMetadata({}).then(response => {
             const metadataList = mapResponseToMetadataList(response.text);
             this.setState({files: metadataList});
-        }).catch(err => alert(i18n.t('Fetch_metadata_error') + ": " + err));
+        }).catch(err => {
+            if (err.response.status === 511) {
+                this.fetchFiles();
+            } else {
+                alert(i18n.t('Fetch_metadata_error') + ": " + err);
+            }
+        });
     }
     onAgencyFilterInput(agency) {
         this.setState({agency});

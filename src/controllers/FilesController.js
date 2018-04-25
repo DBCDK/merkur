@@ -93,12 +93,21 @@ const postFileClaimed = (req, res) => {
 };
 
 const searchFiles = (req, res) => {
-    // Due to the current design of the main page in the UI
-    // this method can not be authenticated, else a 401
-    // code is returned to the browser
-    StoresConnector.searchFiles(req.body).end().then(json =>
-        res.status(200).send(json.text)
-    ).catch(err => res.status(500).send(err));
+    if (!req.session.agencyid) {
+        res.status(511).send();
+    } else {
+        const searchParam = req.body;
+        if (req.session.agencyid === constants.adminAgency) {
+            // admin agency sees all files
+            searchParam.origin = constants.defaultOrigin;
+        } else {
+            // ensure non-admin agency only sees its own files
+            searchParam.agency = req.session.agency;
+        }
+        StoresConnector.searchFiles(searchParam).end().then(json => {
+            res.status(200).send(json.text);
+        }).catch(err => res.status(500).send(err));
+    }
 };
 
 const uploadMetadata = (req, res) => {

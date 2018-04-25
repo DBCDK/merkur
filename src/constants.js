@@ -12,7 +12,8 @@ const constants = {
     filesAddEndpoint: "/files/add",
     filesAddMetadataEndpoint: "/files/metadata",
     filesSearchEndpoint: "/files/search",
-    defaultOrigin: "posthus"
+    defaultOrigin: "posthus",
+    adminAgency: 10100
 };
 Object.freeze(constants);
 
