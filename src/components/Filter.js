@@ -6,6 +6,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import i18n from '../i18n';
+import constants from "../constants";
 
 class Filter extends React.PureComponent {
     constructor(props) {
@@ -13,12 +14,12 @@ class Filter extends React.PureComponent {
         this.onInput = this.onInput.bind(this);
     }
     onInput({target}) {
-        this.props.onInput(Number.parseInt(target.value));
+        this.props.onInput(target.value);
     }
     render() {
         return (
             <select onInput={this.onInput}>
-                <option value={0}>{i18n.t('FilesList_Filter_all')}</option>
+                <option value={constants.adminAgency}>{i18n.t('FilesList_Filter_all')}</option>
                 {
                     this.props.items.map(item => <option key={item} value={item}>{item}</option>)
                 }

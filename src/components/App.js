@@ -15,8 +15,8 @@ import Main from "./Main";
 import Sidebar from "./Sidebar";
 
 function getUserState(agencyid) {
-    if(agencyid === 10100) {
-        return {user: {agency: 0, internalUser: true}};
+    if (agencyid === constants.adminAgency) {
+        return {user: {agency: agencyid, internalUser: true}};
     } else {
         return {user: {agency: agencyid, internalUser: false}};
     }
@@ -39,7 +39,7 @@ class App extends React.Component {
             {hash: queryString.parseUrl(window.location.href).query.hash})
             .end()
             .then(response => {
-                this.setState(getUserState(Number.parseInt(response.text)));
+                this.setState(getUserState(response.text));
             })
             .catch(err => {
                 // manipulate window.location instead of redirect

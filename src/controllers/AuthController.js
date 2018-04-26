@@ -44,16 +44,13 @@ const verifyHash = (hash) => {
 
 const login = (req, res) => {
     if (req.session.agencyid) {
-        console.log("Reading agency ID from session");
-        const agencyid = AgencyIdConverter.agencyIdFromString(
-                req.session.agencyid);
-        console.log("Agency ID from session: " + agencyid);
-        res.status(200).send(String(agencyid));
+        console.log("Agency ID from session: " + req.session.agencyid);
+        res.status(200).send(req.session.agencyid);
     } else {
         const hash = req.query.hash;
         verifyHash(hash).then(response => {
             console.log("Verifying hash: " + hash);
-            const agencyid = AgencyIdConverter.agencyIdFromString(response);
+            const agencyid = AgencyIdConverter.agencyIdToString(response);
             req.session.agencyid = agencyid;
             console.log("Agency ID from netpunkt: " + agencyid);
             res.status(200).send(String(agencyid));

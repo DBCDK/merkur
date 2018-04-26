@@ -55,7 +55,7 @@ const getFiles = (req, res) => {
     const agency = AuthController.authenticate(req, res);
     if (agency !== undefined) {
         StoresConnector.searchFiles({
-            "agency": parseInt(agency, 10)
+            "agency": AgencyIdConverter.agencyIdFromString(agency)
         }).end().then(response =>
             res.status(200).send(mapToFileObjectList(req, response))
         ).catch(err => res.status(500).send(err));
@@ -66,7 +66,7 @@ const getUnclaimedFiles = (req, res) => {
     const agency = AuthController.authenticate(req, res);
     if (agency !== undefined) {
         StoresConnector.searchFiles({
-            "agency": parseInt(agency, 10),
+            "agency": AgencyIdConverter.agencyIdFromString(agency),
             "claimed": false
         }).end().then(response =>
             res.status(200).send(mapToFileObjectList(req, response))
@@ -97,13 +97,12 @@ const searchFiles = (req, res) => {
         res.status(511).send();
     } else {
         const searchParam = req.body;
-        if (AgencyIdConverter.agencyIdToString(req.session.agencyid) ===
-            constants.adminAgency) {
+        if (req.session.agencyid === constants.adminAgency) {
             // admin agency sees all files
             searchParam.origin = constants.defaultOrigin;
         } else {
             // ensure non-admin agency only sees its own files
-            searchParam.agency = req.session.agency;
+            searchParam.agency = AgencyIdConverter.agencyIdFromString(req.session.agencyid);
         }
         StoresConnector.searchFiles(searchParam).end().then(json => {
             res.status(200).send(json.text);

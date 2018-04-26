@@ -7,6 +7,8 @@ import React from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import i18n from '../i18n';
+import AgencyIdConverter from "../model/AgencyIdConverter";
+import constants from "../constants";
 
 class File extends React.Component {
     constructor(props) {
@@ -78,8 +80,8 @@ class FilesList extends React.Component {
                     <tbody>
                     {
                         this.props.metadataList.filter(item =>
-                            this.props.agency === 0 ||
-                            item.metadata.agency === this.props.agency)
+                            this.props.agency === constants.adminAgency ||
+                            item.metadata.agency === AgencyIdConverter.agencyIdFromString(this.props.agency))
                             .map(item => <File key={item.id} id={item.id}
                                                creationTime={item.creationTime}
                                                byteSize={item.byteSize}
@@ -94,7 +96,7 @@ class FilesList extends React.Component {
 }
 
 FilesList.propTypes = {
-    agency: PropTypes.number,
+    agency: PropTypes.string,
     metadataList: PropTypes.array
 };
 
