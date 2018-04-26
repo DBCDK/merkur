@@ -44,10 +44,18 @@ const mapToFileUrl = (request, fileAttributes, path) => {
 const getFile = (req, res) => {
     const agency = AuthController.authenticate(req, res);
     if (agency !== undefined) {
-        StoresConnector.getFile(req.params.id).end().then(response => {
-            res.status(200).send(response.body)
-        }).catch(err => res.status(500).send(
-            `error while getting file ${req.params.id}: ${err}`));
+        StoresConnector.getFileAttributes(req.params.id).end().then(response => {
+            const fileAttributes = response.body;
+            if (constants.adminAgency !== agency
+                && AgencyIdConverter.agencyIdToString(fileAttributes.metadata.agency) !== agency) {
+                res.status(403).send("Attempt to download file owned by another agency");
+            } else {
+                StoresConnector.getFile(req.params.id).end().then(response => {
+                    res.status(200).send(response.body)
+                }).catch(err => res.status(500).send(
+                    `error while getting file ${req.params.id}: ${err}`));
+            }
+        }).catch(err => res.status(500).send(err));
     }
 };
 
