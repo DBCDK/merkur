@@ -12,6 +12,7 @@ const NETPUNKT_REDIRECT_URL = process.env.NETPUNKT_REDIRECT_URL
     || "netpunkt-redirect-url-not-set";
 const SESSION_SECRET = process.env.SESSION_SECRET
     || "";  // Empty default produces a warning in the server log
+const APIKEYS = JSON.parse(process.env.APIKEYS);
 
 const auth_session = {
     name: 'netpunkt-auth',
@@ -100,9 +101,12 @@ const authenticate = (request, response) => {
         return undefined;
     }
 
-    // ToDo: verify secret parts[1]
+    if (APIKEYS[parts[0]] && APIKEYS[parts[0]]['apikey'] === parts[1]) {
+        return parts[0];
+    }
 
-    return parts[0];
+    response.status(403).send("Unknown agency ID or apikey");
+    return undefined;
 };
 
 export {auth_session, authenticate, login}
