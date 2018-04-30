@@ -15,6 +15,8 @@ import * as FilesController from "./controllers/FilesController";
 import SessionMemoryStore from "session-memory-store"
 
 const app = new Express();
+app.disable('x-powered-by');
+
 const server = new Server(app);
 
 const MemoryStore = SessionMemoryStore(session);
