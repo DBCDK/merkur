@@ -121,32 +121,40 @@ const searchFiles = (req, res) => {
 const uploadMetadata = (req, res) => {
     const agency = AuthController.authenticate(req, res);
     if (agency !== undefined) {
-        const url = req.body.url;
-        const metadata = req.body.metadata;
-        if (url === undefined || url === null) {
-            return res.status(400).send("request missing url in json body");
-        } else if (metadata === undefined || metadata === null) {
-            return res.status(400).send("request missing metadata in json body");
-        } else if (!FileMetadata.verify(metadata)) {
-            return res.status(400).send(`request metadata ` +
-                `${JSON.stringify(metadata)} does not pass validation`);
+        if (agency !== constants.adminAgency) {
+            res.status(403).send("Upload not allowed");
+        } else {
+            const url = req.body.url;
+            const metadata = req.body.metadata;
+            if (url === undefined || url === null) {
+                return res.status(400).send("request missing url in json body");
+            } else if (metadata === undefined || metadata === null) {
+                return res.status(400).send("request missing metadata in json body");
+            } else if (!FileMetadata.verify(metadata)) {
+                return res.status(400).send(`request metadata ` +
+                    `${JSON.stringify(metadata)} does not pass validation`);
+            }
+            StoresConnector.addMetadata(url, metadata)
+                .end().then(json =>
+                res.status(200).send(json)
+            ).catch(err => res.status(500).send(err));
         }
-        StoresConnector.addMetadata(url, metadata)
-            .end().then(json =>
-            res.status(200).send(json)
-        ).catch(err => res.status(500).send(err));
     }
 };
 
 const uploadFile = (req, res) => {
     const agency = AuthController.authenticate(req, res);
     if (agency !== undefined) {
-        if (req.is("multipart/form-data")) {
-            return handleFileFormDataUpload(req, res);
-        } else if (req.is("application/octet-stream")) {
-            return handleFileUpload(req, res);
+        if (agency !== constants.adminAgency) {
+            res.status(403).send("Upload not allowed");
         } else {
-            res.sendStatus(415);
+            if (req.is("multipart/form-data")) {
+                return handleFileFormDataUpload(req, res);
+            } else if (req.is("application/octet-stream")) {
+                return handleFileUpload(req, res);
+            } else {
+                res.sendStatus(415);
+            }
         }
     }
 };
