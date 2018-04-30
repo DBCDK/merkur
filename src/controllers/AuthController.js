@@ -105,8 +105,8 @@ const authenticate = (request, response) => {
         return parts[0];
     }
 
-    response.status(401).send("Unknown agency ID or apikey");
     response.setHeader('WWW-Authenticate', 'Basic realm="DBC merkur"');
+    response.status(401).send("Unknown agency ID or apikey");
     return undefined;
 };
 
