@@ -85,7 +85,7 @@ const getUnclaimedFiles = (req, res) => {
 const postFileClaimed = (req, res) => {
     const agency = AuthController.authenticate(req, res);
     if (agency !== undefined) {
-        const id = req.url.split('/')[2];
+        const id = req.params.id;
         StoresConnector.getFileAttributes(id).end().then(response => {
             const fileAttributes = response.body;
             if (AgencyIdConverter.agencyIdToString(fileAttributes.metadata.agency) !== agency) {
