@@ -10,6 +10,7 @@ import StoresConnector from "../StoresConnector";
 import AgencyIdConverter from "../model/AgencyIdConverter";
 import FileMetadata from "../model/FileMetadata";
 import * as AuthController from "./AuthController";
+import logger from '../Logger';
 
 const mapToUtc = (millisecondsSinceEpoch) => {
         return new Date(millisecondsSinceEpoch).toISOString();
@@ -44,10 +45,14 @@ const mapToFileUrl = (request, fileAttributes, path) => {
 const getFile = (req, res) => {
     const agency = AuthController.authenticate(req, res);
     if (agency !== undefined) {
+        logger.info(`${agency} getting file with id ${req.params.id}`,
+            {agency: agency, logger: `${__filename}#getFile`});
         StoresConnector.getFileAttributes(req.params.id).end().then(response => {
             const fileAttributes = response.body;
             if (constants.adminAgency !== agency
                 && AgencyIdConverter.agencyIdToString(fileAttributes.metadata.agency) !== agency) {
+                logger.info(`${agency} illegal download attempt for file with id ${req.params.id}`,
+                    {agency: agency, logger: `${__filename}#getFile`});
                 res.status(403).send("Attempt to download file owned by another agency");
             } else {
                 StoresConnector.getFile(req.params.id).end().then(response => {
@@ -62,6 +67,8 @@ const getFile = (req, res) => {
 const getFiles = (req, res) => {
     const agency = AuthController.authenticate(req, res);
     if (agency !== undefined) {
+        logger.info(`${agency} getting files`,
+            {agency: agency, logger: `${__filename}#getFiles`});
         StoresConnector.searchFiles({
             "agency": AgencyIdConverter.agencyIdFromString(agency)
         }).end().then(response =>
@@ -73,6 +80,8 @@ const getFiles = (req, res) => {
 const getUnclaimedFiles = (req, res) => {
     const agency = AuthController.authenticate(req, res);
     if (agency !== undefined) {
+        logger.info(`${agency} getting unclaimed files`,
+            {agency: agency, logger: `${__filename}#getUnclaimedFiles`});
         StoresConnector.searchFiles({
             "agency": AgencyIdConverter.agencyIdFromString(agency),
             "claimed": false
@@ -86,9 +95,13 @@ const postFileClaimed = (req, res) => {
     const agency = AuthController.authenticate(req, res);
     if (agency !== undefined) {
         const id = req.params.id;
+        logger.info(`${agency} claiming file with id ${id}`,
+            {agency: agency, logger: `${__filename}#postFileClaimed`});
         StoresConnector.getFileAttributes(id).end().then(response => {
             const fileAttributes = response.body;
             if (AgencyIdConverter.agencyIdToString(fileAttributes.metadata.agency) !== agency) {
+                logger.info(`${agency} illegal attempt to claim file with id ${id}`,
+                    {agency: agency, logger: `${__filename}#postFileClaimed`});
                 res.status(403).send("Attempt to claim file owned by another agency");
             } else {
                 fileAttributes.metadata.claimed = true;
@@ -112,6 +125,8 @@ const searchFiles = (req, res) => {
             // ensure non-admin agency only sees its own files
             searchParam.agency = AgencyIdConverter.agencyIdFromString(req.session.agencyid);
         }
+        logger.info(`${req.session.agencyid} listing files`,
+            {agency: req.session.agencyid, logger: `${__filename}#searchFiles`});
         StoresConnector.searchFiles(searchParam).end().then(json => {
             res.status(200).send(json.text);
         }).catch(err => res.status(500).send(err));
@@ -122,6 +137,8 @@ const uploadMetadata = (req, res) => {
     const agency = AuthController.authenticate(req, res);
     if (agency !== undefined) {
         if (agency !== constants.adminAgency) {
+            logger.info(`${agency} illegal upload attempt`,
+                {agency: agency, logger: `${__filename}#uploadMetadata`});
             res.status(403).send("Upload not allowed");
         } else {
             const url = req.body.url;
@@ -134,6 +151,8 @@ const uploadMetadata = (req, res) => {
                 return res.status(400).send(`request metadata ` +
                     `${JSON.stringify(metadata)} does not pass validation`);
             }
+            logger.info(`${agency} uploading ${JSON.stringify(metadata)} to ${url}`,
+                {agency: agency, logger: `${__filename}#uploadMetadata`});
             StoresConnector.addMetadata(url, metadata)
                 .end().then(json =>
                 res.status(200).send(json)
@@ -146,6 +165,8 @@ const uploadFile = (req, res) => {
     const agency = AuthController.authenticate(req, res);
     if (agency !== undefined) {
         if (agency !== constants.adminAgency) {
+            logger.info(`${agency} illegal upload attempt`,
+                {agency: agency, logger: `${__filename}#uploadFile`});
             res.status(403).send("Upload not allowed");
         } else {
             if (req.is("multipart/form-data")) {
