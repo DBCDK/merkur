@@ -37,27 +37,27 @@ Failure to supply a valid header will result in a `401 Unauthorized` response.
     [
         {
             "filename": "mr.krabs",
-            "creationTimeUTC": "2018-04-17T11:33:46.018Z",
+            "creationTimeUTC": "2018-04-17T11:33:46.132Z",
             "byteSize": 8,
             "downloadUrl": "http://merkurhost/files/5000003",
             "claimedUrl": "http://merkurhost/files/5000003/claimed"
         },
         {
             "filename": "squidward",
-            "creationTimeUTC": "2018-04-17T11:33:46.046Z",
+            "creationTimeUTC": "2018-04-17T11:33:46.074Z",
             "byteSize": 9,
             "downloadUrl": "http://merkurhost/files/5000004",
         },
         {
             "filename": "larry",
-            "creationTimeUTC": "2018-04-17T11:33:46.074Z",
+            "creationTimeUTC": "2018-04-17T11:33:46.046Z",
             "byteSize": 5,
             "downloadUrl": "http://merkur/files/5000005",
             "claimedUrl": "http://merkur/files/5000005/claimed"
         },
         {
             "filename": "mrs.puff",
-            "creationTimeUTC": "2018-04-17T11:33:46.132Z",
+            "creationTimeUTC": "2018-04-17T11:33:46.018Z",
             "byteSize": 8,
             "downloadUrl": "http://merkurhost/files/5000007",
             "claimedUrl": "http://merkurhost/files/5000007/claimed"
@@ -68,7 +68,7 @@ Failure to supply a valid header will result in a `401 Unauthorized` response.
 * **Sample Call:**
 
   ```bash
-  $ curl -v --user '123456:secret' http://merkurhost/files
+  $ curl -v --user '123456:secret' https://merkurhost/files
   ```
 
 **List unclaimed files**
@@ -94,7 +94,7 @@ Failure to supply a valid header will result in a `401 Unauthorized` response.
     [
         {
             "filename": "mr.krabs",
-            "creationTimeUTC": "2018-04-17T11:33:46.018Z",
+            "creationTimeUTC": "2018-04-17T11:33:46.132Z",
             "byteSize": 8,
             "downloadUrl": "http://merkurhost/files/5000003",
             "claimedUrl": "http://merkurhost/files/5000003/claimed"
@@ -108,7 +108,7 @@ Failure to supply a valid header will result in a `401 Unauthorized` response.
         },
         {
             "filename": "mrs.puff",
-            "creationTimeUTC": "2018-04-17T11:33:46.132Z",
+            "creationTimeUTC": "2018-04-17T11:33:46.018Z",
             "byteSize": 8,
             "downloadUrl": "http://merkurhost/files/5000007",
             "claimedUrl": "http://merkurhost/files/5000007/claimed"
@@ -119,7 +119,7 @@ Failure to supply a valid header will result in a `401 Unauthorized` response.
 * **Sample Call:**
 
   ```bash
-  $ curl -v --user '123456:secret' http://merkurhost/files/unclaimed
+  $ curl -v --user '123456:secret' https://merkurhost/files/unclaimed
   ```
 
 **Download file**
@@ -148,7 +148,7 @@ Failure to supply a valid header will result in a `401 Unauthorized` response.
 * **Sample Call:**
 
   ```bash
-  $ curl -v --user '123456:secret' http://merkurhost/files/5000007
+  $ curl -v --user '123456:secret' https://merkurhost/files/5000007
   ```
 
 **Claim file**
@@ -185,5 +185,5 @@ Failure to supply a valid header will result in a `401 Unauthorized` response.
 * **Sample Call:**
 
   ```bash
-  $ curl -v --user '123456:secret' -X POST http://merkurhost/files/5000005/claimed
+  $ curl -v --user '123456:secret' -X POST https://merkurhost/files/5000005/claimed
   ```

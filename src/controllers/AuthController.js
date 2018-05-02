@@ -12,6 +12,7 @@ const NETPUNKT_REDIRECT_URL = process.env.NETPUNKT_REDIRECT_URL
     || "netpunkt-redirect-url-not-set";
 const SESSION_SECRET = process.env.SESSION_SECRET
     || "";  // Empty default produces a warning in the server log
+const APIKEYS = JSON.parse(process.env.APIKEYS);
 
 const auth_session = {
     name: 'netpunkt-auth',
@@ -44,16 +45,13 @@ const verifyHash = (hash) => {
 
 const login = (req, res) => {
     if (req.session.agencyid) {
-        console.log("Reading agency ID from session");
-        const agencyid = AgencyIdConverter.agencyIdFromString(
-                req.session.agencyid);
-        console.log("Agency ID from session: " + agencyid);
-        res.status(200).send(String(agencyid));
+        console.log("Agency ID from session: " + req.session.agencyid);
+        res.status(200).send(req.session.agencyid);
     } else {
         const hash = req.query.hash;
         verifyHash(hash).then(response => {
             console.log("Verifying hash: " + hash);
-            const agencyid = AgencyIdConverter.agencyIdFromString(response);
+            const agencyid = AgencyIdConverter.agencyIdToString(response);
             req.session.agencyid = agencyid;
             console.log("Agency ID from netpunkt: " + agencyid);
             res.status(200).send(String(agencyid));
@@ -68,4 +66,48 @@ const login = (req, res) => {
     }
 };
 
-export {auth_session, login}
+const authenticate = (request, response) => {
+    if (request.session.agencyid) {
+        return request.session.agencyid;
+    }
+
+    if (!request.headers.authorization) {
+        response.setHeader('WWW-Authenticate', 'Basic realm="DBC merkur"');
+        response.status(401).send("Missing Authorization header");
+        return undefined;
+    }
+
+    let parts = request.headers.authorization.split(' ');
+    if (parts.length !== 2) {
+        response.setHeader('WWW-Authenticate', 'Basic realm="DBC merkur"');
+        response.status(401).send("Authorization header must include both type and credentials");
+        return undefined;
+    }
+
+    // verify type
+    if (parts[0].toLowerCase() !== 'basic') {
+        response.setHeader('WWW-Authenticate', 'Basic realm="DBC merkur"');
+        response.status(401).send("Authorization type must be Basic");
+        return undefined;
+    }
+
+    const encodedCredentials = parts[1];
+    const decodedCredentials = new Buffer(encodedCredentials, 'base64').toString('utf8');
+
+    parts = decodedCredentials.split(':');
+    if (parts.length !== 2) {
+        response.setHeader('WWW-Authenticate', 'Basic realm="DBC merkur"');
+        response.status(401).send("Apikey must include both user and secret");
+        return undefined;
+    }
+
+    if (APIKEYS[parts[0]] && APIKEYS[parts[0]]['apikey'] === parts[1]) {
+        return parts[0];
+    }
+
+    response.setHeader('WWW-Authenticate', 'Basic realm="DBC merkur"');
+    response.status(401).send("Unknown agency ID or apikey");
+    return undefined;
+};
+
+export {auth_session, authenticate, login}
