@@ -12,7 +12,7 @@ import {
 describe("FileAttributes", () => {
     it("instantiate from json", () => {
         const str = "{\"id\":1,\"creationTime\":1517905042583, " +
-            "\"byteSize\":5,\"metadata\":{\"origin\": \"posthus\", " +
+            "\"byteSize\":5,\"metadata\":{\"origin\": \"merkur\", " +
             "\"agencyid\": 20017}}";
         const js = JSON.parse(str);
         const fileAttributes = FileAttributes.fromJson(js);
@@ -24,16 +24,16 @@ describe("FileAttributes", () => {
         expect(fileAttributes.id).to.equal(1);
         expect(fileAttributes.creationTime).to.equal(1517905042583);
         expect(fileAttributes.byteSize).to.equal(5);
-        expect(fileAttributes.metadata).to.deep.equal({"origin": "posthus",
+        expect(fileAttributes.metadata).to.deep.equal({"origin": "merkur",
             "agencyid": 20017});
     });
     it("mapResponseToMetadataList", () => {
         const str = "[{\"id\":1,\"creationTime\":1517905042583," +
-            "\"byteSize\":5,\"metadata\":{\"origin\": \"posthus\"," +
+            "\"byteSize\":5,\"metadata\":{\"origin\": \"merkur\"," +
             "\"agencyid\": 20017}},{\"id\":2,\"creationTime\":1517905944552," +
-            "\"byteSize\":5,\"metadata\":{\"origin\": \"posthus\"," +
+            "\"byteSize\":5,\"metadata\":{\"origin\": \"merkur\"," +
             "\"agencyid\": 20017}},{\"id\":3,\"creationTime\":1517905945267," +
-            "\"byteSize\":5,\"metadata\":{\"origin\": \"posthus\"," +
+            "\"byteSize\":5,\"metadata\":{\"origin\": \"merkur\"," +
             "\"agencyid\": 20017}},{\"id\":5,\"creationTime\":1517905946362," +
             "\"byteSize\":5,\"metadata\":{\"origin\": \"extern\"," +
             "\"agencyid\": 20017}}]";
