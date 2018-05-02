@@ -18,7 +18,6 @@ const logger = createLogger({
     level: 'info',
     format: format.combine(
         timestampWithTimeZone(),
-        format.splat(),
         format.json()
     ),
     transports: [
