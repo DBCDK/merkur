@@ -6,15 +6,15 @@
 import React from "react";
 import {Route, Switch} from "react-router-dom";
 
-import AdminMode from "./AdminMode";
-import AdminUpload from "./AdminUpload";
+import Inventory from "./Inventory";
+import Upload from "./Upload";
 import NotFound from "./NotFound";
 
 const Main = () => (
     <div id="main">
         <Switch>
-            <Route exact path="/" component={AdminMode}/>
-            <Route exact path="/upload" component={AdminUpload}/>
+            <Route exact path="/" component={Inventory}/>
+            <Route exact path="/upload" component={Upload}/>
             <Route path="*" component={NotFound}/>
         </Switch>
     </div>

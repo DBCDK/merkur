@@ -21,7 +21,7 @@ class ErrorView extends React.Component {
     }
 }
 
-class AdminMode extends React.Component {
+class Inventory extends React.Component {
     constructor(props) {
         super(props);
         this.state = {files: [], agency: -1};
@@ -82,4 +82,4 @@ class AdminMode extends React.Component {
     }
 }
 
-export default AdminMode;
+export default Inventory;
