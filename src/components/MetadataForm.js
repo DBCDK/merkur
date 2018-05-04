@@ -9,6 +9,7 @@ import PropTypes from "prop-types";
 import FileMetadata from "../model/FileMetadata";
 import UploadForm from "./UploadForm";
 import i18n from '../i18n';
+import constants from "../constants";
 
 class MetadataForm extends React.Component {
     constructor(props) {
@@ -25,7 +26,7 @@ class MetadataForm extends React.Component {
         }
         const form = event.target.form;
         const metadata = new FileMetadata(form.name.value,
-            Number.parseInt(form.agency.value), "posthus");
+            Number.parseInt(form.agency.value), constants.defaultOrigin);
         this.props.onClick(this.state.file, metadata);
     }
     onFilesChosen({target}) {
