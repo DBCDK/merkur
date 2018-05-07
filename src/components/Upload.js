@@ -10,7 +10,7 @@ import BusySpinner from './BusySpinner';
 import Uploader from "../model/Uploader";
 import i18n from '../i18n';
 
-class AdminUpload extends React.Component {
+class Upload extends React.Component {
     constructor(props) {
         super(props);
         this.onClick = this.onClick.bind(this);
@@ -52,4 +52,4 @@ class AdminUpload extends React.Component {
     }
 }
 
-export default AdminUpload;
+export default Upload;
