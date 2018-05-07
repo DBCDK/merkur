@@ -5,6 +5,7 @@
 
 import AgencyIdConverter from "../model/AgencyIdConverter";
 import {HttpClient} from "../HttpClient";
+import logger from '../Logger';
 
 const NETPUNKT_AUTHENTICATION_URL = process.env.NETPUNKT_AUTHENTICATION_URL
     || "netpunkt-authentication-url-not-set";
@@ -45,19 +46,23 @@ const verifyHash = (hash) => {
 
 const login = (req, res) => {
     if (req.session.agencyid) {
-        console.log("Agency ID from session: " + req.session.agencyid);
+        logger.debug(`reading agency ID ${req.session.agencyid} from session`,
+            {logger: `${__filename}#login`});
         res.status(200).send(req.session.agencyid);
     } else {
         const hash = req.query.hash;
         verifyHash(hash).then(response => {
-            console.log("Verifying hash: " + hash);
+            logger.debug(`verifying hash ${hash}`,
+                {logger: `${__filename}#login`});
             const agencyid = AgencyIdConverter.agencyIdToString(response);
             req.session.agencyid = agencyid;
-            console.log("Agency ID from netpunkt: " + agencyid);
+            logger.debug(`got agency ID ${agencyid} from netpunkt`,
+                {logger: `${__filename}#login`});
             res.status(200).send(String(agencyid));
         }).catch(err => {
             if (err.response.status === 501) {
-                console.log("Client must redirect to login server: " + NETPUNKT_REDIRECT_URL);
+                logger.debug(`client must redirect to login server ${NETPUNKT_REDIRECT_URL}`,
+                    {logger: `${__filename}#login`});
                 res.status(401).send(NETPUNKT_REDIRECT_URL);
             } else {
                 res.status(500).send(err);
@@ -68,8 +73,12 @@ const login = (req, res) => {
 
 const authenticate = (request, response) => {
     if (request.session.agencyid) {
+        logger.debug(`authenticating via session`,
+            {logger: `${__filename}#authenticate`});
         return request.session.agencyid;
     }
+    logger.debug(`authenticating via authorization header`,
+        {logger: `${__filename}#authenticate`});
 
     if (!request.headers.authorization) {
         response.setHeader('WWW-Authenticate', 'Basic realm="DBC merkur"');
