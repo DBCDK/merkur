@@ -13,6 +13,7 @@ const constants = {
     filesAddMetadataEndpoint: "/files/metadata",
     filesSearchEndpoint: "/files/search",
     defaultOrigin: "merkur",
+    defaultCategory: "dataout",
     adminAgency: '010100'
 };
 Object.freeze(constants);

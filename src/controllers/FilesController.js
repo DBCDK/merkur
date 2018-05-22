@@ -120,7 +120,7 @@ const searchFiles = (req, res) => {
         const searchParam = req.body;
         if (req.session.agencyid === constants.adminAgency) {
             // admin agency sees all files
-            searchParam.origin = constants.defaultOrigin;
+            searchParam.category = constants.defaultCategory;
         } else {
             // ensure non-admin agency only sees its own files
             searchParam.agency = AgencyIdConverter.agencyIdFromString(req.session.agencyid);
@@ -153,6 +153,7 @@ const uploadMetadata = (req, res) => {
             }
             logger.info(`${agency} uploading ${JSON.stringify(metadata)} to ${url}`,
                 {agency: agency, logger: `${__filename}#uploadMetadata`});
+            metadata.category = constants.defaultCategory;
             StoresConnector.addMetadata(url, metadata)
                 .end().then(json =>
                 res.status(200).send(json)
