@@ -3,6 +3,8 @@
   "App_footer": "Kundeservice +45 44 86 77 11 (Mandag - fredag 8:30 - 15:30).",
   "Sidebar_list": "Oversigt",
   "Sidebar_upload": "Upload af fil",
+  "Sidebar_oldDbcPosthus": "Det gamle DBC-posthus",
+  "Inventory_file_not_found?": "Ses filen ikke? Gå evt. til ",
   "File_agency": "Bibl.nr",
   "File_creationTime": "Dato",
   "File_name": "Filnavn",

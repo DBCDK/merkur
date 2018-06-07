@@ -12,6 +12,7 @@ import Filter from "./Filter";
 import {
     getFile, getFileMetadata, mapResponseToMetadataList
 } from "../model/FileAttributes";
+import constants from "../constants";
 
 class ErrorView extends React.Component {
     render() {
@@ -64,6 +65,12 @@ class Inventory extends React.Component {
             <UserContext.Consumer>
                 {user => (
                     <div>
+                        <h6>
+                            {i18n.t('Inventory_file_not_found?')}
+                            <a href={constants.oldDbcPosthusLink} target="_blank">
+                                {i18n.t('Sidebar_oldDbcPosthus')}
+                            </a>
+                        </h6>
                         {this.state.error !== undefined ? (
                             <ErrorView error={`error showing files list: ${this.state.error}`}/>
                         ) : (<span/>)}
