@@ -8,6 +8,7 @@ import {Link} from "react-router-dom";
 import {I18n} from 'react-i18next';
 import i18n from '../i18n';
 import {UserContext} from './UserContext';
+import constants from "../constants";
 
 class Sidebar extends React.PureComponent {
     render() {
@@ -25,8 +26,13 @@ class Sidebar extends React.PureComponent {
                                                     <ul>
                                                         <li><Link to="/">{t('Sidebar_list')}</Link></li>
                                                         <li><Link to="/upload">{t('Sidebar_upload')}</Link></li>
+                                                        <li><a href={constants.oldDbcPosthusLink} target="_blank">{t('Sidebar_oldDbcPosthus')}</a></li>
                                                     </ul>)
-                                                : (<span/>)}
+                                                : (
+                                                    <ul>
+                                                        <li><a href={constants.oldDbcPosthusLink} target="_blank">{t('Sidebar_oldDbcPosthus')}</a></li>
+                                                    </ul>)
+                                            }
                                         </nav>
                                     </div>
                                 )}

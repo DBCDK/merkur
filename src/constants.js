@@ -14,7 +14,8 @@ const constants = {
     filesSearchEndpoint: "/files/search",
     defaultOrigin: "merkur",
     defaultCategory: "dataout",
-    adminAgency: '010100'
+    adminAgency: '010100',
+    oldDbcPosthusLink: "https://netpunkt.dk/form_forward.php?redir=http://dbcposthus.dbc.dk/dataleverancer/index.php"
 };
 Object.freeze(constants);
 
