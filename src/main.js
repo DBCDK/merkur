@@ -3,6 +3,7 @@
  * See license text in LICENSE.txt or at https://opensource.dbc.dk/licenses/gpl-3.0/
  */
 
+import "babel-polyfill";
 import React from "react";
 import ReactDOM from "react-dom";
 
