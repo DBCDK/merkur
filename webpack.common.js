@@ -6,7 +6,10 @@
 const path = require("path");
 
 module.exports = {
-    entry: path.resolve(__dirname, "src", "main.js"),
+    entry: [
+        'babel-polyfill',
+        path.resolve(__dirname, "src", "main.js")
+    ],
     output: {
         path: path.resolve(__dirname, "src", "static", "js"),
         filename: "bundle.js"
