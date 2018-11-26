@@ -13,6 +13,10 @@ for readability but must in a real life scenario be base64 encoded.
 
 Failure to supply a valid header will result in a `401 Unauthorized` response.
 
+Note that the sample calls in this documentation all use the cURL command line
+tool, but any tool or library capable of working with the HTTP protocol can be
+applied.
+
 **List files**
 ----
   Lists information about all files available.
