@@ -18,12 +18,12 @@ class StoresConnector {
             .post(`${FILESTORE_URL}/${FILES_COLLECTION}`,
                 null, null, data);
     }
-    static getFile(id) {
+    static getFile(id, byteSize) {
         const params = new Map();
         params.set("id", id);
         return new HttpClient()
             .get(`${FILESTORE_URL}/${FILE}`, params, null,
-            {"responseType": "blob"});
+            {"responseType": "blob", "responseSize": byteSize});
     }
     static getFileAttributes(id) {
         const params = new Map();

@@ -30,6 +30,10 @@ class Request {
         const req = superagent(options.method, url)
             .query(options.query)
             .set(options.headers);
+        if (options.responseSize !== null
+            && options.responseSize !== undefined) {
+            req.maxResponseSize(options.responseSize)
+        }
         // make superagent accept binary data in responses
         if(options.responseType !== null && options.responseType
                 !== undefined) {

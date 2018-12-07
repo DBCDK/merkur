@@ -55,8 +55,9 @@ const getFile = (req, res) => {
                     {agency: agency, logger: `${__filename}#getFile`});
                 res.status(403).send("Attempt to download file owned by another agency");
             } else {
-                StoresConnector.getFile(req.params.id).end().then(response => {
-                    res.status(200).send(response.body)
+                StoresConnector.getFile(req.params.id, fileAttributes.byteSize).end()
+                    .then(response => {
+                        res.status(200).send(response.body)
                 }).catch(err => res.status(500).send(
                     `error while getting file ${req.params.id}: ${err}`));
             }
