@@ -15,7 +15,7 @@ const constants = {
     defaultOrigin: "merkur",
     defaultCategory: "dataout",
     adminAgency: '010100',
-    oldDbcPosthusLink: "https://netpunkt.dk/form_forward.php?redir=http://dbcposthus.dbc.dk/dataleverancer/index.php"
+    oldDbcPosthusLink: "https://old.netpunkt.dk/form_forward.php?redir=http://dbcposthus.dbc.dk/dataleverancer/index.php"
 };
 Object.freeze(constants);
 
