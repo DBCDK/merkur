@@ -2,27 +2,15 @@
 
 def workerNode = "devel8"
 
-void notifyOfBuildStatus(final String buildStatus) {
-    final String subject = "${buildStatus}: ${env.JOB_NAME} ${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
-    final String details = """<p> Job '${env.JOB_NAME} [${env.BRANCH_NAME}-${env.BUILD_NUMBER}]':</p>
-        <p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BRANCH_NAME}-${env.BUILD_NUMBER}]</a>&QUOT;</p>"""
-    emailext(
-        to: "$mailRecipients",
-        subject: "$subject",
-        body: "$details", attachLog: true, compressLog: false,
-        mimeType: "text/html",
-        recipientProviders: [[$class: "CulpritsRecipientProvider"]]
-    )
-}
-
 pipeline {
     agent {label workerNode}
     environment {
-        MARATHON_TOKEN = credentials("METASCRUM_MARATHON_TOKEN")
-        mailRecipients = "jsj@dbc.dk, jbr@dbc.dk, jbn@dbc.dk, atm@dbc.dk, mib@dbc.dk, vn@dbc.dk"
+        GITLAB_PRIVATE_TOKEN = credentials("metascrum-gitlab-api-token")
     }
     triggers {
         pollSCM("H/03 * * * *")
+        upstream(upstreamProjects: "Docker-base-node-bump-trigger",
+            threshold: hudson.model.Result.SUCCESS)
     }
     options {
         timestamps()
@@ -47,13 +35,22 @@ pipeline {
                 }
             }
         }
-    }
-    post {
-        failure {
-            notifyOfBuildStatus("build failed")
-        }
-        unstable {
-            notifyOfBuildStatus("build became unstable")
-        }
+        stage("bump docker tag in merkur-deploy") {
+			agent {
+				docker {
+					label workerNode
+					image "docker.dbc.dk/build-env:latest"
+					alwaysPull true
+				}
+			}
+			when {
+				branch "master"
+			}
+			steps {
+				script {
+					sh "set-new-version merkur.yml ${env.GITLAB_PRIVATE_TOKEN} metascrum/merkur-deploy ${env.BRANCH_NAME}-${env.BUILD_NUMBER} -b staging"
+				}
+			}
+		}
     }
 }
