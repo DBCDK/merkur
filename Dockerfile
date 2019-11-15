@@ -1,4 +1,4 @@
-FROM docker.dbc.dk/node10:latest
+FROM docker.dbc.dk/dbc-node:latest
 
 ENV USER node
 ENV HOME /home/$USER
