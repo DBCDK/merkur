@@ -1,4 +1,5 @@
 {
+  "Authentication_service_error": "Der opstod en fejl under login, kontakt venligst DBC kundeservice",
   "App_name": "DBCs Posthus",
   "App_footer": "Kundeservice +45 44 86 77 11 (Mandag - fredag 8:30 - 15:30).",
   "Sidebar_list": "Oversigt",

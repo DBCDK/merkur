@@ -22,6 +22,10 @@ function getUserState(agencyid) {
     }
 }
 
+function getCustomerSupportLink() {
+   return (<a href="https://kundeservice.dbc.dk/">kundeservice.dbc.dk</a>)
+}
+
 class App extends React.Component {
     constructor(props) {
         super(props);
@@ -61,11 +65,19 @@ class App extends React.Component {
                             <UserContext.Provider value={this.state.user}>
                             <div>
                                 <header><div><h4>{t('App_name')}</h4></div></header>
-                                <Sidebar/>
-                                <Main/>
+                                {this.state.user.agency === -1 ? (
+                                    <div>
+                                        <p className="error">{t('Authentication_service_error')} {getCustomerSupportLink()}</p>
+                                    </div>
+                                ) : (
+                                    <div>
+                                        <Sidebar/>
+                                        <Main/>
+                                    </div>
+                                )}
                                 <footer>
                                     <div>
-                                        <p>{t('App_footer')} <a href="https://kundeservice.dbc.dk/">kundeservice.dbc.dk</a></p>
+                                        <p>{t('App_footer')} {getCustomerSupportLink()}</p>
                                     </div>
                                 </footer>
                             </div>
