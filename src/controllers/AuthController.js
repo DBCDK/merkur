@@ -60,12 +60,17 @@ const login = (req, res) => {
                 {logger: `${__filename}#login`});
             res.status(200).send(String(agencyid));
         }).catch(err => {
-            if (err.response.status === 501) {
-                logger.debug(`client must redirect to login server ${NETPUNKT_REDIRECT_URL}`,
+            if (err.response === undefined) {
+                logger.error(`failed to get response from authentication service: ${err}`,
                     {logger: `${__filename}#login`});
-                res.status(401).send(NETPUNKT_REDIRECT_URL);
             } else {
-                res.status(500).send(err);
+                if (err.response.status === 501) {
+                    logger.debug(`client must redirect to login server ${NETPUNKT_REDIRECT_URL}`,
+                        {logger: `${__filename}#login`});
+                    res.status(401).send(NETPUNKT_REDIRECT_URL);
+                } else {
+                    res.status(500).send(err);
+                }
             }
         });
     }
