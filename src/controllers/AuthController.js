@@ -106,7 +106,7 @@ const authenticate = (request, response) => {
     }
 
     const encodedCredentials = parts[1];
-    const decodedCredentials = new Buffer(encodedCredentials, 'base64').toString('utf8');
+    const decodedCredentials = Buffer.from(encodedCredentials, 'base64').toString('utf8');
 
     parts = decodedCredentials.split(':');
     if (parts.length !== 2) {
