@@ -43,14 +43,14 @@ applied.
             "filename": "mr.krabs",
             "creationTimeUTC": "2018-04-17T11:33:46.132Z",
             "byteSize": 8,
-            "downloadUrl": "http://merkurhost/files/5000003",
-            "claimedUrl": "http://merkurhost/files/5000003/claimed"
+            "downloadUrl": "https://INSERT_HOSTNAME_HER/files/5000003",
+            "claimedUrl": "https://INSERT_HOSTNAME_HER/files/5000003/claimed"
         },
         {
             "filename": "squidward",
             "creationTimeUTC": "2018-04-17T11:33:46.074Z",
             "byteSize": 9,
-            "downloadUrl": "http://merkurhost/files/5000004",
+            "downloadUrl": "https://INSERT_HOSTNAME_HER/files/5000004",
         },
         {
             "filename": "larry",
@@ -63,8 +63,8 @@ applied.
             "filename": "mrs.puff",
             "creationTimeUTC": "2018-04-17T11:33:46.018Z",
             "byteSize": 8,
-            "downloadUrl": "http://merkurhost/files/5000007",
-            "claimedUrl": "http://merkurhost/files/5000007/claimed"
+            "downloadUrl": "https://INSERT_HOSTNAME_HER/files/5000007",
+            "claimedUrl": "https://INSERT_HOSTNAME_HER/files/5000007/claimed"
         }
     ]
     ```
@@ -72,7 +72,7 @@ applied.
 * **Sample Call:**
 
   ```bash
-  $ curl -v --user '123456:secret' https://merkurhost/files
+  $ curl -v --user '123456:secret' https://INSERT_HOSTNAME_HERE/files
   ```
 
 **List unclaimed files**
@@ -100,8 +100,8 @@ applied.
             "filename": "mr.krabs",
             "creationTimeUTC": "2018-04-17T11:33:46.132Z",
             "byteSize": 8,
-            "downloadUrl": "http://merkurhost/files/5000003",
-            "claimedUrl": "http://merkurhost/files/5000003/claimed"
+            "downloadUrl": "https://INSERT_HOSTNAME_HER/files/5000003",
+            "claimedUrl": "https://INSERT_HOSTNAME_HER/files/5000003/claimed"
         },
         {
             "filename": "larry",
@@ -114,8 +114,8 @@ applied.
             "filename": "mrs.puff",
             "creationTimeUTC": "2018-04-17T11:33:46.018Z",
             "byteSize": 8,
-            "downloadUrl": "http://merkurhost/files/5000007",
-            "claimedUrl": "http://merkurhost/files/5000007/claimed"
+            "downloadUrl": "https://INSERT_HOSTNAME_HER/files/5000007",
+            "claimedUrl": "https://INSERT_HOSTNAME_HER/files/5000007/claimed"
         }
     ]
     ```
@@ -123,7 +123,7 @@ applied.
 * **Sample Call:**
 
   ```bash
-  $ curl -v --user '123456:secret' https://merkurhost/files/unclaimed
+  $ curl -v --user '123456:secret' https://INSERT_HOSTNAME_HERE/files/unclaimed
   ```
 
 **Download file**
@@ -152,7 +152,7 @@ applied.
 * **Sample Call:**
 
   ```bash
-  $ curl -v --user '123456:secret' https://merkurhost/files/5000007
+  $ curl -v --user '123456:secret' https://INSERT_HOSTNAME_HERE/files/5000007
   ```
 
 **Claim file**
@@ -189,5 +189,5 @@ applied.
 * **Sample Call:**
 
   ```bash
-  $ curl -v --user '123456:secret' -X POST https://merkurhost/files/5000005/claimed
+  $ curl -v --user '123456:secret' -X POST https://INSERT_HOSTNAME_HERE/files/5000005/claimed
   ```
