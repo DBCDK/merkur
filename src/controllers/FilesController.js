@@ -24,6 +24,7 @@ const mapToFileObjectList = (request, response) => {
 const mapToFileObject = (request, fileAttributes) => {
     const file = {
         'filename': fileAttributes.metadata.name,
+        'origin': convertFileOrigin(fileAttributes.metadata.origin),
         'creationTimeUTC': mapToUtc(fileAttributes.creationTime),
         'byteSize': fileAttributes.byteSize,
         'downloadUrl': mapToFileUrl(request, fileAttributes, constants.fileEndpoint),
@@ -32,6 +33,17 @@ const mapToFileObject = (request, fileAttributes) => {
         file.claimedUrl = mapToFileUrl(request, fileAttributes, constants.fileClaimedEndpoint);
     }
     return file;
+};
+
+const convertFileOrigin = origin => {
+    switch (origin) {
+        case "dataio/sink/marcconv":
+            return "conversions";
+        case "dataio/sink/periodic-jobs":
+            return "periodic-jobs";
+        default:
+            return "";
+    }
 };
 
 const mapToFileUrl = (request, fileAttributes, path) => {
