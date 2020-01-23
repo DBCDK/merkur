@@ -66,7 +66,7 @@ File.defaultProps = {
 class FilesList extends React.Component {
     render() {
         return (<div>
-                <h3>{i18n.t('FilesList_heading')}</h3>
+                <h4>{i18n.t('FilesList_heading')}</h4>
                 {this.props.children}
                 <table className="table">
                     <thead>

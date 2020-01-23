@@ -22,7 +22,7 @@ class ErrorView extends React.Component {
     }
 }
 
-class Inventory extends React.Component {
+class ConversionsInventory extends React.Component {
     constructor(props) {
         super(props);
         this.state = {files: [], agency: -1};
@@ -44,7 +44,10 @@ class Inventory extends React.Component {
     fetchFiles() {
         // poll for active client session while server-side returns
         // 511 Network Authentication Required
-        getFileMetadata({}).then(response => {
+        getFileMetadata({
+            "category": constants.defaultCategory,
+            "origin": constants.conversionsOrigin
+        }).then(response => {
             const metadataList = mapResponseToMetadataList(response.text);
             this.setState({files: metadataList});
         }).catch(err => {
@@ -65,12 +68,14 @@ class Inventory extends React.Component {
             <UserContext.Consumer>
                 {user => (
                     <div>
+                        <h3>{i18n.t('ConversionsInventory_heading')}</h3>
                         <h6>
                             {i18n.t('Inventory_file_not_found?')}
                             <a href={constants.oldDbcPosthusLink} target="_blank">
                                 {i18n.t('Sidebar_oldDbcPosthus')}
                             </a>
                         </h6>
+                        <br/>
                         {this.state.error !== undefined ? (
                             <ErrorView error={`error showing files list: ${this.state.error}`}/>
                         ) : (<span/>)}
@@ -89,4 +94,4 @@ class Inventory extends React.Component {
     }
 }
 
-export default Inventory;
+export default ConversionsInventory;
