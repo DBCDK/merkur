@@ -26,7 +26,7 @@ class MetadataForm extends React.Component {
         }
         const form = event.target.form;
         const metadata = new FileMetadata(form.name.value,
-            Number.parseInt(form.agency.value), constants.defaultOrigin);
+            Number.parseInt(form.agency.value), constants.conversionsOrigin);
         this.props.onClick(this.state.file, metadata);
     }
     onFilesChosen({target}) {

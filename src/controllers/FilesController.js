@@ -37,7 +37,7 @@ const mapToFileObject = (request, fileAttributes) => {
 
 const convertFileOrigin = origin => {
     switch (origin) {
-        case "dataio/sink/marcconv":
+        case constants.conversionsOrigin:
             return "conversions";
         case "dataio/sink/periodic-jobs":
             return "periodic-jobs";
@@ -99,6 +99,37 @@ const getUnclaimedFiles = (req, res) => {
         StoresConnector.searchFiles({
             "agency": AgencyIdConverter.agencyIdFromString(agency),
             "category": constants.defaultCategory,
+            "claimed": false
+        }).end().then(response =>
+            res.status(200).send(mapToFileObjectList(req, response))
+        ).catch(err => res.status(500).send(err));
+    }
+};
+
+const getConversions = (req, res) => {
+    const agency = AuthController.authenticate(req, res);
+    if (agency !== undefined) {
+        logger.info(`${agency} getting conversions`,
+            {agency: agency, logger: `${__filename}#getConversions`});
+        StoresConnector.searchFiles({
+            "agency": AgencyIdConverter.agencyIdFromString(agency),
+            "category": constants.defaultCategory,
+            "origin": constants.conversionsOrigin
+        }).end().then(response =>
+            res.status(200).send(mapToFileObjectList(req, response))
+        ).catch(err => res.status(500).send(err));
+    }
+};
+
+const getUnclaimedConversions = (req, res) => {
+    const agency = AuthController.authenticate(req, res);
+    if (agency !== undefined) {
+        logger.info(`${agency} getting unclaimed conversions`,
+            {agency: agency, logger: `${__filename}#getUnclaimedConversions`});
+        StoresConnector.searchFiles({
+            "agency": AgencyIdConverter.agencyIdFromString(agency),
+            "category": constants.defaultCategory,
+            "origin": constants.conversionsOrigin,
             "claimed": false
         }).end().then(response =>
             res.status(200).send(mapToFileObjectList(req, response))
@@ -218,7 +249,7 @@ const handleFileFormDataUpload = (req, res) => {
             return res.status(400).send("must specify file to upload");
         }
         if (metadata.origin === undefined || metadata.origin === null) {
-            metadata.origin = constants.defaultOrigin;
+            metadata.origin = constants.conversionsOrigin;
         }
         promise.then(addFileResponse => {
                 const url = addFileResponse.headers.location;
@@ -269,5 +300,5 @@ const addFile = file => {
     });
 };
 
-export {getFile, getFiles, getUnclaimedFiles, postFileClaimed, searchFiles,
+export {getFile, getFiles, getUnclaimedFiles, getConversions, getUnclaimedConversions, postFileClaimed, searchFiles,
     uploadFile, uploadMetadata}
