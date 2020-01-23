@@ -83,7 +83,8 @@ const getFiles = (req, res) => {
         logger.info(`${agency} getting files`,
             {agency: agency, logger: `${__filename}#getFiles`});
         StoresConnector.searchFiles({
-            "agency": AgencyIdConverter.agencyIdFromString(agency)
+            "agency": AgencyIdConverter.agencyIdFromString(agency),
+            "category": constants.defaultCategory
         }).end().then(response =>
             res.status(200).send(mapToFileObjectList(req, response))
         ).catch(err => res.status(500).send(err));
@@ -97,6 +98,7 @@ const getUnclaimedFiles = (req, res) => {
             {agency: agency, logger: `${__filename}#getUnclaimedFiles`});
         StoresConnector.searchFiles({
             "agency": AgencyIdConverter.agencyIdFromString(agency),
+            "category": constants.defaultCategory,
             "claimed": false
         }).end().then(response =>
             res.status(200).send(mapToFileObjectList(req, response))
