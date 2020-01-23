@@ -7,6 +7,7 @@ import React from "react";
 import {Route, Switch} from "react-router-dom";
 
 import ConversionsInventory from "./ConversionsInventory";
+import PeriodicJobsInventory from "./PeriodicJobsInventory";
 import Upload from "./Upload";
 import NotFound from "./NotFound";
 
@@ -15,6 +16,7 @@ const Main = () => (
         <Switch>
             <Route exact path="/" component={ConversionsInventory}/>
             <Route exact path="/converted" component={ConversionsInventory}/>
+            <Route exact path="/delivered" component={PeriodicJobsInventory}/>
             <Route exact path="/upload" component={Upload}/>
             <Route path="*" component={NotFound}/>
         </Switch>
