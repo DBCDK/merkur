@@ -39,7 +39,7 @@ const convertFileOrigin = origin => {
     switch (origin) {
         case constants.conversionsOrigin:
             return "conversions";
-        case "dataio/sink/periodic-jobs":
+        case constants.periodicJobsOrigin:
             return "periodic-jobs";
         default:
             return "";
@@ -130,6 +130,37 @@ const getUnclaimedConversions = (req, res) => {
             "agency": AgencyIdConverter.agencyIdFromString(agency),
             "category": constants.defaultCategory,
             "origin": constants.conversionsOrigin,
+            "claimed": false
+        }).end().then(response =>
+            res.status(200).send(mapToFileObjectList(req, response))
+        ).catch(err => res.status(500).send(err));
+    }
+};
+
+const getPeriodicJobs = (req, res) => {
+    const agency = AuthController.authenticate(req, res);
+    if (agency !== undefined) {
+        logger.info(`${agency} getting periodic-jobs`,
+            {agency: agency, logger: `${__filename}#getPeriodicJobs`});
+        StoresConnector.searchFiles({
+            "agency": AgencyIdConverter.agencyIdFromString(agency),
+            "category": constants.defaultCategory,
+            "origin": constants.periodicJobsOrigin
+        }).end().then(response =>
+            res.status(200).send(mapToFileObjectList(req, response))
+        ).catch(err => res.status(500).send(err));
+    }
+};
+
+const getUnclaimedPeriodicJobs = (req, res) => {
+    const agency = AuthController.authenticate(req, res);
+    if (agency !== undefined) {
+        logger.info(`${agency} getting unclaimed periodic-jobs`,
+            {agency: agency, logger: `${__filename}#getUnclaimedPeriodicJobs`});
+        StoresConnector.searchFiles({
+            "agency": AgencyIdConverter.agencyIdFromString(agency),
+            "category": constants.defaultCategory,
+            "origin": constants.periodicJobsOrigin,
             "claimed": false
         }).end().then(response =>
             res.status(200).send(mapToFileObjectList(req, response))
@@ -300,5 +331,5 @@ const addFile = file => {
     });
 };
 
-export {getFile, getFiles, getUnclaimedFiles, getConversions, getUnclaimedConversions, postFileClaimed, searchFiles,
-    uploadFile, uploadMetadata}
+export {getFile, getFiles, getUnclaimedFiles, getConversions, getUnclaimedConversions,
+    getPeriodicJobs, getUnclaimedPeriodicJobs, postFileClaimed, searchFiles, uploadFile, uploadMetadata}

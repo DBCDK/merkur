@@ -47,6 +47,8 @@ app.post(constants.filesAddMetadataEndpoint, FilesController.uploadMetadata);
 app.post(constants.filesAddEndpoint, FilesController.uploadFile);
 app.get(constants.conversionsEndpoint, FilesController.getConversions);
 app.get(constants.conversionsUnclaimedEndpoint, FilesController.getUnclaimedConversions);
+app.get(constants.periodicJobsEndpoint, FilesController.getPeriodicJobs);
+app.get(constants.periodicJobsUnclaimedEndpoint, FilesController.getUnclaimedPeriodicJobs);
 
 // handle the rest of the routing in the client
 app.get("*", (req, res) => {
