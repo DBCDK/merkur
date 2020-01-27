@@ -24,7 +24,8 @@ class Sidebar extends React.PureComponent {
                                             {user.internalUser
                                                 ? (
                                                     <ul>
-                                                        <li><Link to="/">{t('Sidebar_list')}</Link></li>
+                                                        <li><Link to="/converted">{t('ConversionsInventory_heading')}</Link></li>
+                                                        <li><Link to="/delivered">{t('PeriodicJobsInventory_heading')}</Link></li>
                                                         <li><Link to="/upload">{t('Sidebar_upload')}</Link></li>
                                                         <li><a href={constants.oldDbcPosthusLink} target="_blank">{t('Sidebar_oldDbcPosthus')}</a></li>
                                                     </ul>)

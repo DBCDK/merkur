@@ -26,7 +26,7 @@ class MetadataForm extends React.Component {
         }
         const form = event.target.form;
         const metadata = new FileMetadata(form.name.value,
-            Number.parseInt(form.agency.value), constants.defaultOrigin);
+            Number.parseInt(form.agency.value), form.origin.value);
         this.props.onClick(this.state.file, metadata);
     }
     onFilesChosen({target}) {
@@ -35,6 +35,13 @@ class MetadataForm extends React.Component {
     render() {
         return (
             <form id="upload-form">
+                <div className="form-group">
+                    <label htmlFor="origin">{i18n.t('File_origin')}:</label>
+                    <select name="origin">
+                        <option value={constants.conversionsOrigin}>{i18n.t('ConversionsInventory_heading')}</option>
+                        <option value={constants.periodicJobsOrigin}>{i18n.t('PeriodicJobsInventory_heading')}</option>
+                    </select>
+                </div>
                 <div className="form-group">
                     <label htmlFor="name">{i18n.t('File_name')}:</label>
                     <input type="text" name="name"/>

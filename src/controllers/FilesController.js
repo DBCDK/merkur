@@ -24,6 +24,7 @@ const mapToFileObjectList = (request, response) => {
 const mapToFileObject = (request, fileAttributes) => {
     const file = {
         'filename': fileAttributes.metadata.name,
+        'origin': convertFileOrigin(fileAttributes.metadata.origin),
         'creationTimeUTC': mapToUtc(fileAttributes.creationTime),
         'byteSize': fileAttributes.byteSize,
         'downloadUrl': mapToFileUrl(request, fileAttributes, constants.fileEndpoint),
@@ -32,6 +33,17 @@ const mapToFileObject = (request, fileAttributes) => {
         file.claimedUrl = mapToFileUrl(request, fileAttributes, constants.fileClaimedEndpoint);
     }
     return file;
+};
+
+const convertFileOrigin = origin => {
+    switch (origin) {
+        case constants.conversionsOrigin:
+            return "conversions";
+        case constants.periodicJobsOrigin:
+            return "periodic-jobs";
+        default:
+            return "";
+    }
 };
 
 const mapToFileUrl = (request, fileAttributes, path) => {
@@ -71,7 +83,8 @@ const getFiles = (req, res) => {
         logger.info(`${agency} getting files`,
             {agency: agency, logger: `${__filename}#getFiles`});
         StoresConnector.searchFiles({
-            "agency": AgencyIdConverter.agencyIdFromString(agency)
+            "agency": AgencyIdConverter.agencyIdFromString(agency),
+            "category": constants.defaultCategory
         }).end().then(response =>
             res.status(200).send(mapToFileObjectList(req, response))
         ).catch(err => res.status(500).send(err));
@@ -85,6 +98,69 @@ const getUnclaimedFiles = (req, res) => {
             {agency: agency, logger: `${__filename}#getUnclaimedFiles`});
         StoresConnector.searchFiles({
             "agency": AgencyIdConverter.agencyIdFromString(agency),
+            "category": constants.defaultCategory,
+            "claimed": false
+        }).end().then(response =>
+            res.status(200).send(mapToFileObjectList(req, response))
+        ).catch(err => res.status(500).send(err));
+    }
+};
+
+const getConversions = (req, res) => {
+    const agency = AuthController.authenticate(req, res);
+    if (agency !== undefined) {
+        logger.info(`${agency} getting conversions`,
+            {agency: agency, logger: `${__filename}#getConversions`});
+        StoresConnector.searchFiles({
+            "agency": AgencyIdConverter.agencyIdFromString(agency),
+            "category": constants.defaultCategory,
+            "origin": constants.conversionsOrigin
+        }).end().then(response =>
+            res.status(200).send(mapToFileObjectList(req, response))
+        ).catch(err => res.status(500).send(err));
+    }
+};
+
+const getUnclaimedConversions = (req, res) => {
+    const agency = AuthController.authenticate(req, res);
+    if (agency !== undefined) {
+        logger.info(`${agency} getting unclaimed conversions`,
+            {agency: agency, logger: `${__filename}#getUnclaimedConversions`});
+        StoresConnector.searchFiles({
+            "agency": AgencyIdConverter.agencyIdFromString(agency),
+            "category": constants.defaultCategory,
+            "origin": constants.conversionsOrigin,
+            "claimed": false
+        }).end().then(response =>
+            res.status(200).send(mapToFileObjectList(req, response))
+        ).catch(err => res.status(500).send(err));
+    }
+};
+
+const getPeriodicJobs = (req, res) => {
+    const agency = AuthController.authenticate(req, res);
+    if (agency !== undefined) {
+        logger.info(`${agency} getting periodic-jobs`,
+            {agency: agency, logger: `${__filename}#getPeriodicJobs`});
+        StoresConnector.searchFiles({
+            "agency": AgencyIdConverter.agencyIdFromString(agency),
+            "category": constants.defaultCategory,
+            "origin": constants.periodicJobsOrigin
+        }).end().then(response =>
+            res.status(200).send(mapToFileObjectList(req, response))
+        ).catch(err => res.status(500).send(err));
+    }
+};
+
+const getUnclaimedPeriodicJobs = (req, res) => {
+    const agency = AuthController.authenticate(req, res);
+    if (agency !== undefined) {
+        logger.info(`${agency} getting unclaimed periodic-jobs`,
+            {agency: agency, logger: `${__filename}#getUnclaimedPeriodicJobs`});
+        StoresConnector.searchFiles({
+            "agency": AgencyIdConverter.agencyIdFromString(agency),
+            "category": constants.defaultCategory,
+            "origin": constants.periodicJobsOrigin,
             "claimed": false
         }).end().then(response =>
             res.status(200).send(mapToFileObjectList(req, response))
@@ -204,7 +280,7 @@ const handleFileFormDataUpload = (req, res) => {
             return res.status(400).send("must specify file to upload");
         }
         if (metadata.origin === undefined || metadata.origin === null) {
-            metadata.origin = constants.defaultOrigin;
+            metadata.origin = constants.conversionsOrigin;
         }
         promise.then(addFileResponse => {
                 const url = addFileResponse.headers.location;
@@ -255,5 +331,5 @@ const addFile = file => {
     });
 };
 
-export {getFile, getFiles, getUnclaimedFiles, postFileClaimed, searchFiles,
-    uploadFile, uploadMetadata}
+export {getFile, getFiles, getUnclaimedFiles, getConversions, getUnclaimedConversions,
+    getPeriodicJobs, getUnclaimedPeriodicJobs, postFileClaimed, searchFiles, uploadFile, uploadMetadata}

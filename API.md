@@ -25,6 +25,12 @@ applied.
   but only unclaimed files also have a claimed url for file retrieval
   acknowledgement.
 
+  To single out files originating from the conversion service (in danish 
+  "konverteringsservice") use `/conversions` endpoint instead of /files.
+
+  To single out files originating from the periodic jobs service (in danish 
+  "dataleverancer") use `/periodic-jobs` endpoint instead of /files.
+
 * **URL**
 
   /files
@@ -41,6 +47,7 @@ applied.
     [
         {
             "filename": "mr.krabs",
+            "origin": "conversions",
             "creationTimeUTC": "2018-04-17T11:33:46.132Z",
             "byteSize": 8,
             "downloadUrl": "https://INSERT_HOSTNAME_HER/files/5000003",
@@ -48,12 +55,14 @@ applied.
         },
         {
             "filename": "squidward",
+            "origin": "periodic-jobs",
             "creationTimeUTC": "2018-04-17T11:33:46.074Z",
             "byteSize": 9,
             "downloadUrl": "https://INSERT_HOSTNAME_HER/files/5000004",
         },
         {
             "filename": "larry",
+            "origin": "conversions",
             "creationTimeUTC": "2018-04-17T11:33:46.046Z",
             "byteSize": 5,
             "downloadUrl": "http://merkur/files/5000005",
@@ -61,6 +70,7 @@ applied.
         },
         {
             "filename": "mrs.puff",
+            "origin": "periodic-jobs",
             "creationTimeUTC": "2018-04-17T11:33:46.018Z",
             "byteSize": 8,
             "downloadUrl": "https://INSERT_HOSTNAME_HER/files/5000007",
@@ -82,6 +92,12 @@ applied.
   All file entries contain both a download url for actual file content
   retrieval and a claimed url for file retrieval acknowledgement.
 
+  To single out files originating from the conversion service (in danish 
+  "konverteringsservice") use `/conversions/unclaimed` endpoint instead of /files.
+
+  To single out files originating from the periodic jobs service (in danish 
+  "dataleverancer") use `/periodic-jobs/unclaimed` endpoint instead of /files.
+
 * **URL**
 
   /files/unclaimed
@@ -98,6 +114,7 @@ applied.
     [
         {
             "filename": "mr.krabs",
+            "origin": "conversions",
             "creationTimeUTC": "2018-04-17T11:33:46.132Z",
             "byteSize": 8,
             "downloadUrl": "https://INSERT_HOSTNAME_HER/files/5000003",
@@ -105,6 +122,7 @@ applied.
         },
         {
             "filename": "larry",
+            "origin": "conversions",
             "creationTimeUTC": "2018-04-17T11:33:46.074Z",
             "byteSize": 5,
             "downloadUrl": "http://merkur/files/5000005",
@@ -112,6 +130,7 @@ applied.
         },
         {
             "filename": "mrs.puff",
+            "origin": "periodic-jobs",
             "creationTimeUTC": "2018-04-17T11:33:46.018Z",
             "byteSize": 8,
             "downloadUrl": "https://INSERT_HOSTNAME_HER/files/5000007",
