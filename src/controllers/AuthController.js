@@ -7,16 +7,24 @@ import AgencyIdConverter from "../model/AgencyIdConverter";
 import {HttpClient} from "../HttpClient";
 import logger from '../Logger';
 
-const NETPUNKT_AUTHENTICATION_URL = process.env.NETPUNKT_AUTHENTICATION_URL
-    || "netpunkt-authentication-url-not-set";
-const NETPUNKT_REDIRECT_URL = process.env.NETPUNKT_REDIRECT_URL
-    || "netpunkt-redirect-url-not-set";
+const BIB_DK_AUTHENTICATION_URL = process.env.BIB_DK_AUTHENTICATION_URL
+    || "bib-dk-authentication-url-not-set";
+const BIB_DK_TOKEN_REQUEST_URL = process.env.BIB_DK_TOKEN_REQUEST_URL
+    || "bib-dk-token-request-url-not-set";
+const BIB_DK_USERINFO_URL = process.env.BIB_DK_USERINFO_URL
+    || "bib-dk-userinfo-url-not-set";
+const BIB_DK_CLIENT_ID = process.env.BIB_DK_CLIENT_ID
+    || "bib-dk-client-id-not-set";
+const BIB_DK_CLIENT_SECRET = process.env.BIB_DK_CLIENT_SECRET
+    || "bib-dk-client-secret-not-set";
 const SESSION_SECRET = process.env.SESSION_SECRET
     || "";  // Empty default produces a warning in the server log
 const APIKEYS = JSON.parse(process.env.APIKEYS);
+const BIB_DK_REDIRECT_URL = process.env.BIB_DK_REDIRECT_URL
+    || "bib-dk-redirect-url-not-set";
 
 const auth_session = {
-    name: 'netpunkt-auth',
+    name: 'merkur_session',
     secret: SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
@@ -26,53 +34,68 @@ const auth_session = {
     }
 };
 
-const verifyHash = (hash) => {
-    return new Promise((resolve, reject) => {
-        new HttpClient()
-            .addHeaders({"Content-type": "application/x-www-form-urlencoded"})
-            .post(NETPUNKT_AUTHENTICATION_URL, null, null, `hash=${hash}`)
-            .end()
-            .then(response => {
-                if (response.header !== undefined && response.header !== null) {
-                    if (response.header.agency === undefined) {
-                        reject("missing agency header in netpunkt response");
-                    }
-                    resolve(response.header.agency);
-                }
-            })
-            .catch(err => reject(err));
-    });
-};
-
 const login = (req, res) => {
     if (req.session.agencyid) {
         logger.debug(`reading agency ID ${req.session.agencyid} from session`,
             {logger: `${__filename}#login`});
+
+        // Return agencyid from cookie
         res.status(200).send(req.session.agencyid);
-    } else {
-        const hash = req.query.hash;
-        verifyHash(hash).then(response => {
-            logger.debug(`verifying hash ${hash}`,
-                {logger: `${__filename}#login`});
-            const agencyid = AgencyIdConverter.agencyIdToString(response);
-            req.session.agencyid = agencyid;
-            logger.debug(`got agency ID ${agencyid} from netpunkt`,
-                {logger: `${__filename}#login`});
-            res.status(200).send(String(agencyid));
-        }).catch(err => {
-            if (err.response === undefined) {
-                logger.error(`failed to get response from authentication service: ${err}`,
-                    {logger: `${__filename}#login`});
-            } else {
-                if (err.response.status === 501) {
-                    logger.debug(`client must redirect to login server ${NETPUNKT_REDIRECT_URL}`,
-                        {logger: `${__filename}#login`});
-                    res.status(401).send(NETPUNKT_REDIRECT_URL);
-                } else {
-                    res.status(500).send(err);
-                }
-            }
-        });
+
+    } else if ( req.query.code !== undefined ) {
+        logger.debug("Received authorization code " + req.query.code,
+            {logger: `${__filename}#login`});
+
+        // Request authorization token
+        let q = "grant_type=authorization_code" +
+            "&code=" + req.query.code +
+            "&redirect_uri=" + BIB_DK_REDIRECT_URL +
+            "&client_id=" + BIB_DK_CLIENT_ID +
+            "&client_secret=" + BIB_DK_CLIENT_SECRET;
+        new HttpClient()
+            .addHeaders({"Content-type": "application/x-www-form-urlencoded"})
+            .post(BIB_DK_TOKEN_REQUEST_URL, null, null, q)
+            .end()
+            .then(response => {
+                let token = response.body.access_token;
+                let expire = response.body.expires_in;
+
+                // Retrieve agencyid
+                let agencyid = -1;
+                new HttpClient()
+                    .addHeaders({"Content-type": "application/x-www-form-urlencoded", "Authorization": "Bearer " + token})
+                    .post(BIB_DK_USERINFO_URL, null, null)
+                    .end()
+                    .then(response => {
+                        agencyid = response.body.attributes.netpunktAgency;
+                        logger.error(agencyid);
+                        res.status(200).send(agencyid);
+                    })
+                    .catch(err => {
+                        logger.error("Userinfo request failed: " + err);
+                        logger.error(err);
+                        res.status(500).send(-1);
+                        return;
+                    });
+            })
+            .catch(err => {
+                logger.error("Authentication token request failed: " + err.response.text);
+                res.status(500).send("-1");
+                return;
+            });
+
+    }
+    else {
+        logger.debug("No agencyid or code, redirect to " + BIB_DK_AUTHENTICATION_URL,
+            {logger: `${__filename}#login`});
+
+        // Redirect to the login page on login.bib.dk
+        let q = BIB_DK_AUTHENTICATION_URL +
+            "?response_type=code" +
+            "&client_id=" + BIB_DK_CLIENT_ID +
+            "&redirect_uri=" + BIB_DK_REDIRECT_URL +
+            "&agencyType=forsk,folk";
+        res.status(403).send(q);
     }
 };
 

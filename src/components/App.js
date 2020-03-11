@@ -40,15 +40,19 @@ class App extends React.Component {
     login() {
         const client = new HttpClient();
         client.get(constants.loginEndpoint, null,
-            {hash: queryString.parseUrl(window.location.href).query.hash})
+            {code: queryString.parseUrl(window.location.href).query.code})
             .end()
             .then(response => {
                 this.setState(getUserState(response.text));
             })
             .catch(err => {
-                // manipulate window.location instead of redirect
-                // to avoid CORS error
-                window.location = err.response.text;
+                if( err.status == 403 ) {
+                    // manipulate window.location instead of redirect
+                    // to avoid CORS error
+                    window.location = err.response.text;
+                } else {
+                    this.setState(getUserState(-1));
+                }
             });
     }
 
@@ -64,7 +68,7 @@ class App extends React.Component {
                         return (
                             <UserContext.Provider value={this.state.user}>
                             <div>
-                                <header><div><h4>{t('App_name')}</h4></div></header>
+                                <header><div><h4>{t('App_name')} - {this.state.user.agency}</h4></div></header>
                                 {this.state.user.agency === -1 ? (
                                     <div>
                                         <p className="error">{t('Authentication_service_error')} {getCustomerSupportLink()}</p>
