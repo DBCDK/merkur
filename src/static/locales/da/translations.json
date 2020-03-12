@@ -20,5 +20,6 @@
   "Upload_error": "En fejl opstod under upload af fil",
   "Upload_no_file_choosen": "Ingen fil valgt",
   "Fetch_download_link_error": "En fejl opstod under hentning af download link",
-  "Fetch_metadata_error": "En fejl opstod under hentning af fil metadata"
+  "Fetch_metadata_error": "En fejl opstod under hentning af fil metadata",
+  "Authenticating": "Logger på"
 }

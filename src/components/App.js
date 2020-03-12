@@ -31,7 +31,7 @@ class App extends React.Component {
         super(props);
         this.state = {
             user: {
-                agency: -1,
+                agency: undefined,
                 internalUser: false
             }
         }
@@ -68,10 +68,18 @@ class App extends React.Component {
                         return (
                             <UserContext.Provider value={this.state.user}>
                             <div>
-                                <header><div><h4>{t('App_name')} - {this.state.user.agency}</h4></div></header>
-                                {this.state.user.agency === -1 ? (
+                                {this.state.user.agency === undefined || this.state.user.agency === -1 ? (
+                                        <header><div><h4>{t('App_name')}</h4></div></header>
+                                    ) : (
+                                        <header><div><h4>{t('App_name')} - {this.state.user.agency}</h4></div></header>
+                                )}
+                                {this.state.user.agency === -1 || this.state.user.agency === undefined ? (
                                     <div>
-                                        <p className="error">{t('Authentication_service_error')} {getCustomerSupportLink()}</p>
+                                        {this.state.user.agency === undefined ? (
+                                            <p className="error">{t('Authenticating')}</p>
+                                        ) : (
+                                            <p className="error">{t('Authentication_service_error')} {getCustomerSupportLink()}</p>
+                                        )}
                                     </div>
                                 ) : (
                                     <div>
