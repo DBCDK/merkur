@@ -6,6 +6,8 @@
 import AgencyIdConverter from "../model/AgencyIdConverter";
 import {HttpClient} from "../HttpClient";
 import logger from '../Logger';
+import constants from "../constants";
+import queryString from "query-string";
 
 const BIB_DK_AUTHENTICATION_URL = process.env.BIB_DK_AUTHENTICATION_URL
     || "bib-dk-authentication-url-not-set";
@@ -22,6 +24,8 @@ const SESSION_SECRET = process.env.SESSION_SECRET
 const APIKEYS = JSON.parse(process.env.APIKEYS);
 const BIB_DK_REDIRECT_URL = process.env.BIB_DK_REDIRECT_URL
     || "bib-dk-redirect-url-not-set";
+const BIB_DK_LOGOUT_URL = process.env.BIB_DK_LOGOUT_URL
+    || "bib-dk-logout-url-not-set";
 
 const auth_session = {
     name: 'merkur_session',
@@ -58,22 +62,19 @@ const login = (req, res) => {
             .end()
             .then(response => {
                 let token = response.body.access_token;
-                let expire = response.body.expires_in;
 
                 // Retrieve agencyid
-                let agencyid = -1;
                 new HttpClient()
                     .addHeaders({"Content-type": "application/x-www-form-urlencoded", "Authorization": "Bearer " + token})
                     .post(BIB_DK_USERINFO_URL, null, null)
                     .end()
                     .then(response => {
-                        agencyid = response.body.attributes.netpunktAgency;
-                        logger.error(agencyid);
-                        res.status(200).send(agencyid);
+                        req.session.agencyid = response.body.attributes.netpunktAgency;
+                        req.session.token = token;
+                        res.status(200).send(req.session.agencyid);
                     })
                     .catch(err => {
                         logger.error("Userinfo request failed: " + err);
-                        logger.error(err);
                         res.status(500).send(-1);
                         return;
                     });
@@ -147,4 +148,13 @@ const authenticate = (request, response) => {
     return undefined;
 };
 
-export {auth_session, authenticate, login}
+const logout = (req, res) => {
+    req.session.agencyid = undefined;
+
+    let q = BIB_DK_LOGOUT_URL + "?access_token=" + req.session.token;
+    req.session.token = undefined;
+
+    res.status(301).header("Location", q).send("redirecting");
+}
+
+export {auth_session, authenticate, login, logout}

@@ -33,6 +33,7 @@ app.use(BodyParser.json({
 }));
 
 app.get(constants.loginEndpoint, AuthController.login);
+app.get(constants.logoutEndpoint, AuthController.logout);
 
 // Be very careful when changing the order of the
 // resource paths below, especially fileEndpoint.

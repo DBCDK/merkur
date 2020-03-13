@@ -21,5 +21,8 @@
   "Upload_no_file_choosen": "Ingen fil valgt",
   "Fetch_download_link_error": "En fejl opstod under hentning af download link",
   "Fetch_metadata_error": "En fejl opstod under hentning af fil metadata",
-  "Authenticating": "Logger på"
+  "Authenticating": "Logger på",
+  "Logout": "Log ud",
+  "You are now logged out": "Du er nu logget ud",
+  "Login again": "Log ind igen"
 }

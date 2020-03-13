@@ -47,6 +47,7 @@ class App extends React.Component {
             })
             .catch(err => {
                 if( err.status == 403 ) {
+                    this.setState(getUserState(undefined));
                     // manipulate window.location instead of redirect
                     // to avoid CORS error
                     window.location = err.response.text;
@@ -71,7 +72,7 @@ class App extends React.Component {
                                 {this.state.user.agency === undefined || this.state.user.agency === -1 ? (
                                         <header><div><h4>{t('App_name')}</h4></div></header>
                                     ) : (
-                                        <header><div><h4>{t('App_name')} - {this.state.user.agency}</h4></div></header>
+                                        <header><div><h4>{t('App_name')} - {this.state.user.agency} <a href="/logout">{t('Logout')}</a></h4></div></header>
                                 )}
                                 {this.state.user.agency === -1 || this.state.user.agency === undefined ? (
                                     <div>
