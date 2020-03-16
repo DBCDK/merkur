@@ -74,13 +74,15 @@ const login = (req, res) => {
                         res.status(200).send(req.session.agencyid);
                     })
                     .catch(err => {
-                        logger.error("Userinfo request failed: " + err);
+                        logger.error("Userinfo request failed: " + err.response.text);
+                        logger.error(err);
                         res.status(500).send(-1);
                         return;
                     });
             })
             .catch(err => {
                 logger.error("Authentication token request failed: " + err.response.text);
+                logger.error(err);
                 res.status(500).send("-1");
                 return;
             });
