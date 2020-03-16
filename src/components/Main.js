@@ -19,7 +19,7 @@ const Main = () => (
             <Route exact path="/converted" component={ConversionsInventory}/>
             <Route exact path="/delivered" component={PeriodicJobsInventory}/>
             <Route exact path="/upload" component={Upload}/>
-            <Route exact path="/loggedout" component={LoggedOUt}/>
+            <Route exact path="/loggedout" component={LoggedOut}/>
             <Route path="*" component={NotFound}/>
         </Switch>
     </div>
