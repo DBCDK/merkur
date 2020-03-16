@@ -149,12 +149,10 @@ const authenticate = (request, response) => {
 };
 
 const logout = (req, res) => {
-    req.session.agencyid = undefined;
-
-    let q = BIB_DK_LOGOUT_URL + "?access_token=" + req.session.token;
+    let q = BIB_DK_LOGOUT_URL + "?access_token=" + req.session.token + "&redirect_uri=" + BIB_DK_REDIRECT_URL;
     req.session.token = undefined;
-
-    res.status(301).header("Location", q).send("redirecting");
+    req.session.agencyid = undefined;
+    res.status(301).header("Location", q).send("Logout");
 }
 
 export {auth_session, authenticate, login, logout}

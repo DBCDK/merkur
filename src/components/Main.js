@@ -10,7 +10,6 @@ import ConversionsInventory from "./ConversionsInventory";
 import PeriodicJobsInventory from "./PeriodicJobsInventory";
 import Upload from "./Upload";
 import NotFound from "./NotFound";
-import LoggedOut from "./LoggedOut";
 
 const Main = () => (
     <div id="main">
@@ -19,7 +18,6 @@ const Main = () => (
             <Route exact path="/converted" component={ConversionsInventory}/>
             <Route exact path="/delivered" component={PeriodicJobsInventory}/>
             <Route exact path="/upload" component={Upload}/>
-            <Route exact path="/loggedout" component={LoggedOut}/>
             <Route path="*" component={NotFound}/>
         </Switch>
     </div>
