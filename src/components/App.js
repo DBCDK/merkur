@@ -31,7 +31,7 @@ class App extends React.Component {
         super(props);
         this.state = {
             user: {
-                agency: -1,
+                agency: undefined,
                 internalUser: false
             }
         }
@@ -40,15 +40,20 @@ class App extends React.Component {
     login() {
         const client = new HttpClient();
         client.get(constants.loginEndpoint, null,
-            {hash: queryString.parseUrl(window.location.href).query.hash})
+            {code: queryString.parseUrl(window.location.href).query.code})
             .end()
             .then(response => {
                 this.setState(getUserState(response.text));
             })
             .catch(err => {
-                // manipulate window.location instead of redirect
-                // to avoid CORS error
-                window.location = err.response.text;
+                if( err.status == 403 ) {
+                    this.setState(getUserState(undefined));
+                    // manipulate window.location instead of redirect
+                    // to avoid CORS error
+                    window.location = err.response.text;
+                } else {
+                    this.setState(getUserState(-1));
+                }
             });
     }
 
@@ -64,10 +69,18 @@ class App extends React.Component {
                         return (
                             <UserContext.Provider value={this.state.user}>
                             <div>
-                                <header><div><h4>{t('App_name')}</h4></div></header>
-                                {this.state.user.agency === -1 ? (
+                                {this.state.user.agency === undefined || this.state.user.agency === -1 ? (
+                                        <header><div><h4>{t('App_name')}</h4></div></header>
+                                    ) : (
+                                        <header><div><h4>{t('App_name')} - {this.state.user.agency} <a href="/logout">{t('Logout')}</a></h4></div></header>
+                                )}
+                                {this.state.user.agency === -1 || this.state.user.agency === undefined ? (
                                     <div>
-                                        <p className="error">{t('Authentication_service_error')} {getCustomerSupportLink()}</p>
+                                        {this.state.user.agency === undefined ? (
+                                            <p className="error">{t('Authenticating')}</p>
+                                        ) : (
+                                            <p className="error">{t('Authentication_service_error')} {getCustomerSupportLink()}</p>
+                                        )}
                                     </div>
                                 ) : (
                                     <div>

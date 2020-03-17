@@ -5,6 +5,7 @@
 
 const constants = {
     loginEndpoint: "/login",
+    logoutEndpoint: "/logout",
     filesEndpoint: "/files",
     filesUnclaimedEndpoint: "/files/unclaimed",
     conversionsEndpoint: "/conversions",
