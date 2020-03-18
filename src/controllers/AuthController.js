@@ -151,7 +151,6 @@ const authenticate = (request, response) => {
 };
 
 const logout = (req, res) => {
-    console.log(req.session);
     let q = BIB_DK_LOGOUT_URL + "?access_token=" + req.session.token + "&redirect_uri=" + BIB_DK_REDIRECT_URL;
     req.session.agencyid = undefined;
     res.status(301)
