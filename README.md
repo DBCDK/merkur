@@ -20,10 +20,16 @@ docker run -it --rm --name merkur-dev \
 	-e SESSION_SECRET=$SESSION_SECRET \
 	-e BIB_DK_AUTHENTICATION_URL=$BIB_DK_AUTHENTICATION_URL \
 	-e BIB_DK_CLIENT_ID=$BIB_DK_CLIENT_ID \
+	-e BIB_DK_TOKEN_REQUEST_URL=$BIB_DK_TOKEN_REQUEST_URL \
+        -e BIB_DK_CLIENT_SECRET=$BIB_DK_CLIENT_SECRET \
+        -e BIB_DK_USERINFO_URL=$BIB_DK_USERINFO_URL \
 	-e BIB_DK_REDIRECT_URL=$BIB_DK_REDIRECT_URL \
+	-e BIB_DK_LOGOUT_URL=$BIB_DK_LOGOUT_URL \
 	-v $(pwd)/package.json:/home/node/package.json:Z \
 	-v $(pwd)/yarn.lock:/home/node/yarn.lock:Z \
 	-v $(pwd)/src:/home/node/src:Z \
 	-v $(pwd)/node_modules:/home/node/node_modules:Z \
-	-p 3000:3000 merkur-dev
+	-p 3000:3000 merkur-dev \
+	/bin/bash
+yarn build && node_modules/.bin/babel-node src/express-server
 ```
