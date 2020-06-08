@@ -21,7 +21,7 @@ const constants = {
     periodicJobsOrigin: "dataio/sink/periodic-jobs",
     defaultCategory: "dataout",
     adminAgency: '010100',
-    oldDbcPosthusLink: "https://old.netpunkt.dk/form_forward.php?redir=http://dbcposthus.dbc.dk/dataleverancer/index.php"
+    oldDbcPosthusLink: "http://dbcposthus.dbc.dk/dataleverancer/index.php"
 };
 Object.freeze(constants);
 
