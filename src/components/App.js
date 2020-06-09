@@ -72,7 +72,7 @@ class App extends React.Component {
                                 {this.state.user.agency === undefined || this.state.user.agency === -1 ? (
                                         <header><div><h4>{t('App_name')}</h4></div></header>
                                     ) : (
-                                        <header><div><h4>{t('App_name')} - {this.state.user.agency} <a href="/logout">{t('Logout')}</a></h4></div></header>
+                                        <header><div><h4>{t('App_name')} - {this.state.user.agency} <a href="/logout" style={{float: 'right'}}>{t('Logout')}</a></h4></div></header>
                                 )}
                                 {this.state.user.agency === -1 || this.state.user.agency === undefined ? (
                                     <div>
