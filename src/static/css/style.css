@@ -12,6 +12,7 @@ html body {
     width: 15%;
     padding-top: 1.25rem;
     position: fixed;
+    top: 4%;
     font-size: 120%;
 }
 
@@ -27,6 +28,10 @@ html body {
 #main {
     float: right;
     width: 85%;
+    position: absolute;
+    top: 4%;
+    left: 15%;
+    z-index: 1;
 }
 
 .error {
@@ -75,6 +80,9 @@ header {
     border-color: transparent;
     color: white;
     padding: 0.5rem;
+    width: 100%;
+    position: fixed;
+    z-index: 10;
 }
 
 header h4 {
@@ -91,6 +99,7 @@ footer {
     position: fixed;
     text-align: center;
     width: 100%;
+    z-index: 10;
 }
 
 footer a {
