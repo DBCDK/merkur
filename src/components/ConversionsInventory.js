@@ -87,6 +87,7 @@ class ConversionsInventory extends React.Component {
                                 <Filter items={agencies} onInput={this.onAgencyFilterInput}/>
                             ) : (<span/>)}
                         </FilesList>
+                        <br/>
                     </div>
                 )}
             </UserContext.Consumer>
