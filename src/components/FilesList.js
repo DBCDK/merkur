@@ -28,7 +28,7 @@ class File extends React.Component {
     render() {
         return (
             <tr>
-                <td><a href="#" download={this.props.metadata.name} onClick={this.onClick}>{this.props.metadata.name}</a></td>
+                <td><a href="#" onClick={this.onClick}>{this.props.metadata.name}</a></td>
                 <td>{this.props.metadata.agency}</td>
                 <td>{File.formatCreationTime(this.props.creationTime)}</td>
                 <td>{File.byteSizeToHumanReadableSI(this.props.byteSize)}</td>
